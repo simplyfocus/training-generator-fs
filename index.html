@@ -5,84 +5,65 @@
     <title>Training Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--  for use as app  -->
-    <link rel="apple-touch-icon" sizes="180x180" href="skate icon (1).ico">
-    <link rel="icon" type="image/png" sizes="192x192" href="skate icon (1).ico">
-    <link rel="icon" type="image/png" sizes="512x512" href="skate icon (1).ico">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8aa5c3" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#202547" media="(prefers-color-scheme: dark)">
-
+    <!-- links -->
+    <link rel="apple-touch-icon" sizes="180x180" href="skate icon (1).ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="skate icon (1).ico">
+    <link rel="icon" type="image/png" sizes="512x512" href="skate icon (1).ico">
+    <audio id="alertSound" src="workout10sec.mp3" preload="auto"></audio>
+    <script src="exercise-library.js"></script>
+    <link rel="stylesheet" href="style.css">
     <!-- use Google Poppins for headers -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- header font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    
     <style>
         /* override font for whole page with Roboto for sleek look */
         body { font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif; padding: 20px; }
         li { margin-bottom: 6px; }
     </style>
 
-    <audio id="alertSound" src="workout10sec.mp3" preload="auto"></audio>
-    <script src="exercise-library.js"></script>
 </head>
-
 <body>
 
-
-
 <main>
-
     <!-- CATEGORY SELECTION -->
     <section id="target-selection">
-        <header>
-            <h1>Workout Generator</h1>
-        </header>
+        <header><h1>Workout Generator</h1></header>
         <form id="categorySelect">
-
             <fieldset>
                 <legend>Select none or more inside the following:</legend>
 
-                <label>Jumps
-                <select id="jumps" name="jump-selection" multiple>
+                <label>Jumps<select id="jumps" name="jump-selection" multiple>
                     <option value="Axel">Axel</option>
                     <option value="Salchow">Salchow</option>
                     <option value="Toe-loop">Toe-loop</option>
                     <option value="Loop">Loop</option>
                     <option value="Flip">Flip</option>
                     <option value="Lutz">Lutz</option>
-                </select>
-                </label>
+                </select></label>
 
-                <label>Power
-                <select id="power" multiple>
+                <label>Power<select id="power" multiple>
                     <option value="random">random</option>
-                </select>
-                </label>
+                </select></label>
 
-                <label>Strength
-                <select id="strength" multiple>
+                <label>Strength<select id="strength" multiple>
                     <option value="random">random</option>
-                </select>
-                </label>
+                </select></label>
 
-                <label>Cardio
-                <select id="cardio" multiple>
+                <label>Cardio<select id="cardio" multiple>
                     <option value="random">random</option>
-                </select>
-                </label>
+                </select></label>
 
-                <label>Stretching
-                <select id="stretches" multiple>
+                <label>Stretching<select id="stretches" multiple>
                     <option value="random">random</option>
-                </select>
-                </label>
+                </select></label>
 
             </fieldset>
-
-            
-
         </form>
 
         <section>
