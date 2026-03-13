@@ -1,6 +1,6 @@
-.hidden {
-    display: none;
-}
+.hidden {display: none;}
+/* .middled{justify-self: middle;} */
+#dayName{display: none;}
 
 :root{
     --bg:#8aa5c3;
@@ -94,7 +94,23 @@ body{
     padding:28px;
     -webkit-font-smoothing:antialiased;
 }
+/* Buttons */
+button{
+    background:var(--j-current);
+    color:white;
+    border:0;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
 
+button:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,0.12);}
+button:active{transform:translateY(0);}
+
+
+#target-selection{padding-bottom:15px;}
 #categorySelect fieldset {
     border: 2px solid #ddd;
     border-radius: 8px;
@@ -133,7 +149,7 @@ body{
     display:flex;
     flex-wrap: wrap;
     list-style: none;
-    gap:1vh;
+    gap:clamp(5px);
 }
 
 #selectedList li {
@@ -145,7 +161,12 @@ body{
     padding:8px 10px;
     font-family: 'Poppins';
 }
-
+button#generateWorkout{color:var(--text);
+    padding:6px 12px;border:3px solid transparent;border-radius:999px;font-weight:700;font-size:13px;
+    background:
+    linear-gradient(45deg, var(--timertitle), var(--card)) padding-box,
+    linear-gradient(90deg, var(--j-current), var(--barpurple)) border-box;
+}
 /* Main container */
 .container{
     width:min(900px,98%);
@@ -224,7 +245,9 @@ h2{
     backdrop-filter: blur(6px);
 }
 
-#timer #timerLabel{text-align:center; font-weight:600;color:var(--timertitle);font-size:20px;font-family:'Poppins', sans-serif;}
+#timer #timerLabel{
+    text-align:center; font-weight:600;color:var(--timertitle);font-size:20px;
+    font-family:'Poppins', sans-serif;line-height: clamp(20px,6.2vh,35px);}
 
 #timeDisplay{
     font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
@@ -242,26 +265,11 @@ h2{
 .progress-track{width:100%;height:8px;background:rgba(11,18,32,0.06);border-radius:999px;overflow:hidden;margin-bottom:6px}
 .progress-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--j-current),var(--barpurple));transition:width .35s linear}
 
-/* Buttons */
-button{
-    background:var(--j-current);
-    color:white;
-    border:0;
-    padding:8px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
-}
-
-button:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,0.12);}
-button:active{transform:translateY(0);}
-
 button#pauseBtn{background:#757f8e}
 button#resetBtn{background:#ef4444}
 
 /* Workout list */
-ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;width:100%;}
+ul{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:10px;width:100%;}
 
 /* make each item full width and split into left/right areas */
 #workoutList li{
@@ -305,9 +313,9 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
 .title-sub{font-size:13px;margin:6px 0 0;color:var(--muted);font-weight:500}
 
 /* Stacked title with pill-style day label */
-.title-stacked{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:16px}
+.title-stacked{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:14px}
 .title-stacked .title-main{font-size:30px;margin:0}
-.day-pill{background:var(--accent);color:var(--j-current);padding:6px 12px;border-radius:999px;font-weight:700;font-size:13px}
+
 
 /* icon + title layout */
 .title-with-icon{display:flex;align-items:center;gap:12px}
@@ -315,7 +323,7 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
 
 /* header ICO placed above title */
 .header-ico{width:56px;height:56px;object-fit:cover;border-radius:6px;box-shadow:0 6px 18px rgba(2,6,23,0.12);border:1px solid rgba(7,18,50,0.06);display:block;margin:0 0 13px}
-.title-stacked{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:16px}
+
 /*.title-plus-icons{justify-items: center;}*/
 .title-plus-icons{display:flex;flex-direction:column;align-items:center}
 
@@ -405,6 +413,8 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
         .title-with-icon .title-main{margin:0; line-height: 1; padding-left: 5px; padding-bottom:0px; font-size: 3.5vw;}
         .title-plus-icons #audioUnlockBtn{align-self:center; margin:0 0 0px;margin-right: 0.7vw;}
         .day-pill{display: none;}
+        .title-stacked{gap:5px}
+        .title-plus-icons #audioUnlockBtn{height:18%; width:18%;}
         
     }
 }
@@ -440,6 +450,9 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
     ul{
         width:100%;
         gap:14px;
+    }
+    #selectedList{
+        gap:clamp(10vh)/*10px*/
     }
 
     li{
@@ -545,20 +558,24 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
         #timer{margin-left: 0;margin-right: 0;}
         #timer #timerLabel.timer-label{
             font-size:21px /*!important*/;
-            line-height: 3vh;
+            /* line-height: 3vh; */
             margin:0px
         }
 
         /*hide svg*/
         .app-icon{display: none;}
         .title-stacked .title-plus-icons{ display: flex; flex-direction: row; align-items:center; justify-content:center; padding-bottom:0px;}
-        .title-with-icon .title-main{margin:0; line-height: 1; padding-left: 5px; padding-bottom:0px; font-size: 5vw;}
-        .title-plus-icons #audioUnlockBtn{height:20%; width:20%; align-self:center; margin:0 0 0px;margin-right: 0.7vw;}
+        .title-with-icon .title-main{margin:0; line-height: 1; padding-left: 5px; padding-bottom:0px; font-size: 6vw;}
+        .title-plus-icons #audioUnlockBtn{height:16%; width:16%; align-self:center; margin:0 0 0px;margin-right: 0.7vw;}
         .day-pill{display:none}
 
 
     }
 }
+
+
+/* #timer #timerLabel.timer-label{line-height: clamp(20px,6.2vh,35px);}*/
+
 
 *,
 *::before,
