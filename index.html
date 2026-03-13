@@ -24,7 +24,7 @@
     <style>
         /* override font for whole page with Roboto for sleek look */
         body { font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif; padding: 20px; }
-        li { margin-bottom: 6px; }
+        /*li { margin-bottom: 6px; margin-right: 6px;}*/
     </style>
 
 </head>
@@ -48,19 +48,19 @@
                 </select></label>
 
                 <label>Power<select id="power" multiple>
-                    <option value="random">random</option>
+                    <option value="random">🔀random</option>
                 </select></label>
 
                 <label>Strength<select id="strength" multiple>
-                    <option value="random">random</option>
+                    <option value="random">🔀random</option>
                 </select></label>
 
                 <label>Cardio<select id="cardio" multiple>
-                    <option value="random">random</option>
+                    <option value="random">🔀random</option>
                 </select></label>
 
                 <label>Stretching<select id="stretches" multiple>
-                    <option value="random">random</option>
+                    <option value="random">🔀random</option>
                 </select></label>
 
             </fieldset>
@@ -74,11 +74,9 @@
         </ul>
         </section>
 
-    </section>
-    <section id="buttonZone">
-    <button type="button" id="generateWorkout">Generate Workout</button>
-    </section>
+        <button type="button" id="generateWorkout">Generate Workout</button>
 
+    </section>
     <!-- WORKOUT RESULT PAGE -->
     <section id="workout-page" class="hidden">
 
@@ -446,8 +444,9 @@ generateBtn.addEventListener("click", () => {
 
         generatorPage.classList.toggle("hidden");
         workoutPage.classList.toggle("hidden");
+        generateBtn.classList.toggle("middled")
     
-        if(genHidden){genHidden=false;moveElement("generateWorkout","titleStacked","buttonZone")} 
+        if(genHidden){genHidden=false;moveElement("generateWorkout","titleStacked","target-selection")} 
         else {genHidden=true;
             workoutSelection = getWorkoutSelection();
             const todayObj = new Day(workoutSelection);
@@ -457,7 +456,7 @@ generateBtn.addEventListener("click", () => {
             console.log("workoutSelection= ",workoutSelection)
             console.log("workoutItems= ",workoutItems)
 
-            moveElement("generateWorkout","buttonZone","titleStacked")
+            moveElement("generateWorkout","target-selection","titleStacked")
 
 
 
