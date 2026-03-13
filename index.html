@@ -30,16 +30,15 @@
 
 <body>
 
-<header>
-    <h1>Workout Generator</h1>
-</header>
+
 
 <main>
 
     <!-- CATEGORY SELECTION -->
     <section id="target-selection">
-        <h2>Select Exercise Types</h2>
-
+        <header>
+            <h1>Workout Generator</h1>
+        </header>
         <form id="categorySelect">
 
             <fieldset>
@@ -56,25 +55,29 @@
                 </select>
                 </label>
 
-                <label>Power</label>
+                <label>Power
                 <select id="power" multiple>
                     <option value="random">random</option>
                 </select>
+                </label>
 
-                <label>Strength</label>
+                <label>Strength
                 <select id="strength" multiple>
                     <option value="random">random</option>
                 </select>
+                </label>
 
-                <label>Cardio</label>
+                <label>Cardio
                 <select id="cardio" multiple>
                     <option value="random">random</option>
                 </select>
+                </label>
 
-                <label>Stretching</label>
+                <label>Stretching
                 <select id="stretches" multiple>
                     <option value="random">random</option>
                 </select>
+                </label>
 
             </fieldset>
 
@@ -83,7 +86,7 @@
         </form>
 
         <section>
-        <h3>Selected Categories</h3>
+        <h2>Selected Categories</h2>
 
         <ul id="selectedList">
             <!-- selected categories appear here -->
@@ -91,15 +94,16 @@
         </section>
 
     </section>
+    <section id="buttonZone">
     <button type="button" id="generateWorkout">Generate Workout</button>
-    
+    </section>
 
     <!-- WORKOUT RESULT PAGE -->
     <section id="workout-page" class="hidden">
 
         <div class="container">
         <div class="main-col">
-            <header class="title-stacked">
+            <header id="titleStacked" class="title-stacked">
                 <div class="title-plus-icons">
                     <img id="audioUnlockBtn" src="skate icon (1).ico" class="header-ico" alt="Skate icon" />
                     <div class="title-with-icon">
@@ -207,8 +211,15 @@ stretchTargets.forEach(target => {
         const option = document.createElement("option");
         option.value = target; option.textContent = target;
         document.getElementById("stretches").appendChild(option);
-    });
+});
 
+function moveElement(_id,_from,_to){
+    const element=document.getElementById(_id)
+    const from=document.getElementById(_from)
+    const to=document.getElementById(_to)
+
+    to.appendChild(element)
+}
 
 // Declare sound
 const alertSound = document.getElementById("alertSound");
@@ -455,7 +466,7 @@ generateBtn.addEventListener("click", () => {
         generatorPage.classList.toggle("hidden");
         workoutPage.classList.toggle("hidden");
     
-        if(genHidden){genHidden=false} 
+        if(genHidden){genHidden=false;moveElement("generateWorkout","titleStacked","buttonZone")} 
         else {genHidden=true;
             workoutSelection = getWorkoutSelection();
             const todayObj = new Day(workoutSelection);
@@ -464,6 +475,8 @@ generateBtn.addEventListener("click", () => {
 
             console.log("workoutSelection= ",workoutSelection)
             console.log("workoutItems= ",workoutItems)
+
+            moveElement("generateWorkout","buttonZone","titleStacked")
 
 
 
@@ -795,5 +808,4 @@ function renderList(){
 </script>
 
 </body>
-
 </html>
