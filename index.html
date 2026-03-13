@@ -311,12 +311,12 @@ class Day {
                 } else {
                 this[category] = _wkSelection[category]
                 }
-                console.log("--",category)
-                console.log(this[category])
+                // console.log("--",category)
+                // console.log(this[category])
             }
         })
 
-        console.log(_wkSelection)
+        // console.log(_wkSelection)
     }
 
     getJumps() {
@@ -325,7 +325,6 @@ class Day {
 
     getPower() {
         if (!this.power) return null;
-        
 
         let result = [];
         
@@ -346,7 +345,7 @@ class Day {
     }
 
     getStrength() {
-        console.log("this . strength:",this.strength);
+        // console.log("this . strength:",this.strength);
         if (!this.strength) return null;
 
         let result = [];
@@ -407,7 +406,7 @@ class Day {
         }
 
 
-        console.log("stretches from method:",result)
+        // console.log("stretches from method:",result)
 
         result=[...new Set(result)];   // dedupe
 
@@ -426,8 +425,8 @@ class Day {
         if (this.getStretches()) todos.push(...this.getStretches());
 
 
-        console.log(this.jumps,this.power,this.strength,this.cardio,this.stretches)
-        console.log("TODOS: ",todos)
+        // console.log(this.jumps,this.power,this.strength,this.cardio,this.stretches)
+        // console.log("TODOS: ",todos)
         return todos;
     }
 
@@ -446,17 +445,18 @@ generateBtn.addEventListener("click", () => {
         workoutPage.classList.toggle("hidden");
         generateBtn.classList.toggle("middled")
     
-        if(genHidden){genHidden=false;moveElement("generateWorkout","titleStacked","target-selection")} 
+        if(genHidden){genHidden=false;moveElement("generateWorkout","titleStacked","target-selection"); timer.pause();document.getElementById("timer").style="display: none"} 
         else {genHidden=true;
             workoutSelection = getWorkoutSelection();
             const todayObj = new Day(workoutSelection);
             const workoutItems = todayObj.getALL();
             displayItems = workoutItems && workoutItems.length ? [...warmups, ...workoutItems] : [...warmups];
 
-            console.log("workoutSelection= ",workoutSelection)
-            console.log("workoutItems= ",workoutItems)
+            // console.log("workoutSelection= ",workoutSelection)
+            // console.log("workoutItems= ",workoutItems)
 
             moveElement("generateWorkout","target-selection","titleStacked")
+
 
 
 
