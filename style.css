@@ -1,0 +1,535 @@
+.hidden {
+    display: none;
+}
+
+:root{
+    --bg:#8aa5c3;
+    --bg-transparent:#708cacb7;
+    --card:#e9eef7;
+    --j-current:#2a4787;
+    --muted:#6b7280;
+    --accent:#7a95ce71;
+    --accent-2:#8fa1a7;     /*Hovered cards*/
+    --glass: rgba(255,255,255,0.7);
+    --gradbttm:#9daaca;
+
+    --text:#071232;
+    --colordark:#0f172a;
+    --timerboxtop:rgba(152, 169, 193, 0.9);
+    --timerboxbttm:rgba(181, 202, 220, 0.9);
+    --timertitle:#2c2e2f;
+    --barpurple:#8b5cf6;
+
+    --e-unc:#632b765f;
+    --s-unc:#2c93ad34;
+
+    --e-current: #911be1c8;
+    --s-current: #16a7cbd2;
+
+    --j-shadow: rgba(37,99,235,0.14);
+    --e-shadow: rgba(145, 26, 224, 0.14); /**/
+    --s-shadow: rgba(22, 167, 203, 0.14);
+
+    --e-hover: #995cad5f;
+    --s-hover: #66c4dc3a;
+}
+
+/* Dark mode overrides using media query */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #202547;
+        --bg-transparent: #1c1f41cb;
+        --card: #061427;
+        --j-current: #1856ba;
+        --muted: #465a7e;
+        --accent: rgba(59, 131, 246, 0.114);
+        --accent-2: rgba(112, 157, 230, 0.2);
+        --glass: rgba(116, 107, 159, 0.1);
+        --gradbttm:rgba(8, 35, 85, 0.9);
+        
+        --text: #e1e6ec;
+
+        --timerboxtop:rgba(176, 202, 237, 0.9);
+        --timerboxbttm:rgba(57, 82, 104, 0.9);
+        --timertitle:#1a0e72;
+        --barpurple:#7e3cf0;
+
+        
+    }
+}
+
+/* Page layout */
+html,body{height:100%;
+    
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+/*Chat GPT*/
+html{
+    scroll-behavior:smooth;
+    background-attachment:fixed;
+    min-height:100%;
+    overflow-x: hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background: linear-gradient(180deg,var(--bg),var(--gradbttm));
+    
+    z-index:-1;
+}
+body{
+    margin:0;
+    font-family: 'Poppins', sans-serif;
+    /* use fixed attachment so gradient fills viewport reliably in Edge */
+    background: transparent;
+    /* background-attachment:fixed; */
+    min-height:100vh;
+    
+    justify-content:center;
+    padding:28px;
+    -webkit-font-smoothing:antialiased;
+}
+
+
+
+#selectedList {
+    list-style: none;
+    padding: 0;
+}
+
+#selectedList li {
+    display: inline-block;
+    background: #eee;
+    padding: 6px 10px;
+    margin: 5px;
+    border-radius: 6px;
+}
+
+/* Main container */
+.container{
+    width:min(900px,98%);
+    background:var(--card);
+    border-radius:14px;
+    padding:17px;
+    box-shadow:0 12px 30px rgba(16,24,40,0.08);
+    border:1px solid rgba(37,99,235,0.04);
+
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:32px;
+
+
+    width:100%;
+    /* max-width:90vw;*/
+    box-sizing:border-box;
+}
+
+.main-col{
+    align-self:center;
+    justify-items: center;
+}
+
+.side-col{
+    display:flex;
+    justify-content:flex-end;
+}
+
+/* time input */
+.time-input{
+    width:60px;
+    padding:4px 6px;
+    border:1px solid rgba(55,65,81,0.2);
+    border-radius:6px;
+    font-size:13px;
+    margin-left:8px;
+}
+.time-input:focus{outline:none;box-shadow:0 0 0 2px rgba(37,99,235,0.3)}
+
+/* Titles */
+h1{
+    margin:0 0 6px 0;
+    font-size:20px;
+    text-align:center;
+    color:var(--text);
+    font-family: 'Poppins', sans-serif;
+}
+h2{
+    margin:0 0 18px 0;
+    font-size:14px;
+    text-align:center;
+    color:var(--muted);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Timer card (overrides inline styles gently) */
+#timer{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    padding:12px 7px;
+    border-radius:22px;
+    background:linear-gradient(180deg,var(--timerboxtop),var(--timerboxbttm));
+    border:3px solid var(--bg-transparent);
+    /* max-width:360px; */
+    margin:14px auto 0px auto;
+
+    /* CHAT GPT */
+    position:sticky;
+    top:12px;
+    z-index:100;
+
+    box-shadow:0 12px 30px rgba(0,0,0,0.35);
+    backdrop-filter: blur(6px);
+}
+
+#timer #timerLabel{text-align:center; font-weight:600;color:var(--timertitle);font-size:20px;font-family:'Poppins', sans-serif;}
+
+#timeDisplay{
+    font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
+    font-weight:900;
+    background:#f1f5f9;
+    padding:8px 18px;
+    border-radius:8px;
+    font-size:47px;
+    color:#0b1220;
+    min-width:86px;
+    text-align:center;
+}
+
+/* timer progress bar */
+.progress-track{width:100%;height:8px;background:rgba(11,18,32,0.06);border-radius:999px;overflow:hidden;margin-bottom:6px}
+.progress-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--j-current),var(--barpurple));transition:width .35s linear}
+
+/* Buttons */
+button{
+    background:var(--j-current);
+    color:white;
+    border:0;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+
+button:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,0.12);}
+button:active{transform:translateY(0);}
+
+button#pauseBtn{background:#757f8e}
+button#resetBtn{background:#ef4444}
+
+/* Workout list */
+ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;width:100%;}
+
+/* make each item full width and split into left/right areas */
+li{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;padding:12px 14px;background:var(--accent);
+    border-radius:10px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
+    cursor:pointer;color:var(--text);font-weight:600;width:100%;box-sizing:border-box;
+}
+li.stretch{background:var(--s-unc)}
+li.exercise{background:var(--e-unc)}
+
+.side-col{flex:1 1 280px;display:flex;justify-content:flex-end}
+
+.item-left{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0}
+.item-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+
+li:hover{background:var(--accent-2);transform:translateY(-4px);box-shadow:0 12px 24px rgba(2,6,23,0.06);}
+li.exercise:hover{background:var(--e-hover)}
+li.stretch:hover{background:var(--s-hover)}
+li .meta{font-size:12px;color:var(--muted);font-weight:500}
+
+/* Focus for keyboard accessibility */
+li:focus{outline:3px solid rgba(37,99,235,0.18);outline-offset:2px}
+
+/* Responsive */
+@media (max-width:680px){
+    .container{flex-direction:column}
+}
+
+@media (max-width:420px){
+    .container{padding:18px}
+    button{padding:8px 10px;font-size:13px}
+    .exercise-label{font-size:14px}
+    li.time-input{width:10px;padding:0px 0px;font-size:12px}
+}
+
+/* small utility */
+.muted{color:var(--muted);font-size:13px}
+.title-accent{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
+.title-main{font-size:30px;margin:0;color:var(--text);letter-spacing:0.2px}
+.title-sub{font-size:13px;margin:6px 0 0;color:var(--muted);font-weight:500}
+
+/* Stacked title with pill-style day label */
+.title-stacked{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:16px}
+.title-stacked .title-main{font-size:30px;margin:0}
+.day-pill{background:var(--accent);color:var(--j-current);padding:6px 12px;border-radius:999px;font-weight:700;font-size:13px}
+
+/* icon + title layout */
+.title-with-icon{display:flex;align-items:center;gap:12px}
+.app-icon{width:36px;height:36px;flex:0 0 auto;color:var(--j-current);fill:currentColor}
+
+/* header ICO placed above title */
+.header-ico{width:56px;height:56px;object-fit:cover;border-radius:6px;box-shadow:0 6px 18px rgba(2,6,23,0.12);border:1px solid rgba(7,18,50,0.06);display:block;margin:0 0 13px}
+.title-stacked{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:16px}
+/*.title-plus-icons{justify-items: center;}*/
+.title-plus-icons{display:flex;flex-direction:column;align-items:center}
+
+
+/* Check circle for marking exercises done */
+.check-circle{
+    width:26px;height:26px;border-radius:50%;border:2px solid rgba(7,18,50,0.08);
+    background:transparent;display:inline-flex;align-items:center;justify-content:center;
+    margin-right:12px;flex:0 0 auto;cursor:pointer;transition:background .12s ease,border-color .12s ease,transform .08s;
+}
+.check-circle:hover{transform:translateY(-2px);border-color:var(--j-current)}
+.check-circle[aria-pressed="true"]{background:#22c55e;/* emerald-500 */border-color:#22c55e;color:white}
+.check-circle::after{content:'';font-size:14px;color:white;display:block;opacity:0;transition:opacity .12s;}
+.check-circle[aria-pressed="true"]::after{content:'✓';opacity:1}
+
+li.done{opacity:0.5;color:var(--muted)}
+li.done .exercise-label{text-decoration:line-through}
+
+li.dragging{opacity:0.4;}
+
+/* Exercise labels in list */
+.exercise-label{font-weight:600;font-family:'Poppins', 'Roboto', sans-serif}
+
+/* current (active) item while timer is running */
+.current{background:var(--j-current);color:#fff;box-shadow:0 12px 30px var(--j-shadow)}
+.current.exercise{background:var(--e-current);box-shadow:0 12px 30px var(--e-shadow)}
+.current.stretch{background:var(--s-current);box-shadow:0 12px 30px var(--s-shadow)}
+.current .exercise-label{color:#fff}
+.current .check-circle{border-color:rgba(255,255,255,0.35);color:#fff}
+.current .time-input{background:rgba(255,255,255,0.06);color:#fff;border-color:rgba(255,255,255,0.12)}
+.current .drag-handle{color:rgba(255,255,255,0.8)}
+
+/* drag handle */
+.drag-handle{
+    cursor:grab;
+    font-size:18px;
+    color:var(--muted);
+    margin-right:8px;
+}
+.drag-handle:active{cursor:grabbing;}
+
+/* small arrow buttons */
+.small-arrow{
+    padding:1px 3px;
+    font-size:9px;
+    line-height:1;
+    background:rgba(0,0,0,0.05);
+    border-radius:6px;
+}
+.small-arrow:hover{background:rgba(0,0,0,0.1);} 
+
+/* ensure checkbox + label align left inside item */
+.item-left{justify-content:flex-start}
+
+/* time input box styling */
+.time-input{
+            width:32px; height:32px; background-color: #c3ccde; border-radius: 10px;
+            font-size:20px; font-weight: 600;
+            font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
+        }
+.time-input::-webkit-inner-spin-button{
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/*   LANDSCAPE MODE   */
+@media (orientation: landscape) {
+    .main-col{
+        position: sticky;
+        top: 10%;
+        /*transform: translateY(+50%);
+        /*transform: translateY(-50%); /*-----------------------TRANSFORM-----------------------*/
+        align-self: flex-start;
+    }
+    .side-col{
+        align-self:flex-start;
+    }
+    #timer{padding:12px 14px;}
+    li{
+        padding:10px 14px;
+    }
+
+    @media (max-width:900px) {
+        /* *{outline: solid red;}*/
+        .app-icon{display: none;}
+        .title-stacked .title-plus-icons{ display: flex; flex-direction: row; align-items:center; padding-bottom:0px;}
+        .title-with-icon .title-main{margin:0; line-height: 1; padding-left: 5px; padding-bottom:0px; font-size: 3.5vw;}
+        .title-plus-icons #audioUnlockBtn{align-self:center; margin:0 0 0px;margin-right: 0.7vw;}
+        .day-pill{display: none;}
+        
+    }
+}
+
+/*   PORTRAIT MODE   */
+@media (orientation: portrait) {
+
+    .container{
+        grid-template-columns: 1fr;
+        gap:20px;
+    }
+    .container{
+        width:100%;
+        width:90vw;
+        padding:20px;
+    }
+
+    .main-col{
+        order:1;
+    }
+
+    .side-col{
+        order:2;
+        justify-content:stretch;
+
+        /* CHAT GPT */
+        max-height:60vh;
+        overflow-y:auto;
+        -webkit-overflow-scrolling:touch;
+    }
+    .side-col{
+        max-height:70vh;
+        overflow-y:auto;
+        padding-top: 10px;
+    }
+
+    ul{
+        width:100%;
+    }
+    ul{
+        gap:14px;
+    }
+
+    li{
+        padding:14px 16px;
+        font-size:15px;
+    }
+    li{
+        padding:8px 10px;
+        border-radius:16px;
+        font-size:18px;
+    }
+    .exercise-label{font-size:16px}
+
+    /* .time-input{
+        width:70px;
+        height:36px;
+        font-size:18px;
+    }*/
+
+    
+    /* NEW */
+    body{
+        padding:10px;
+    }
+
+    .title-main{
+        font-size:34px;
+    }
+
+    .day-pill{
+        font-size:16px;
+        padding:8px 16px;
+    }
+
+    .header-ico{
+        width:70px;
+        height:70px;
+    }
+
+    .drag-handle{
+        font-size:24px;
+        padding:6px;
+    }
+
+    #timeDisplay{
+        font-size:8.5vw;
+        background-color: #f6f6f6;
+    } /* NOT working */
+
+    #timer{
+        width: 100%;
+    }
+    /* END NEW */
+    
+
+    /* VS suggestion */
+    /* hide scrollbar but still allow scrolling on mobile */
+    .side-col::-webkit-scrollbar{
+        display:none;
+    }
+
+    /*   ADDITIONS FOR SIZE   
+    .title-main{
+        font-size: clamp(28px,6vw,36px);
+    }
+    
+    body{
+        font-size: 20vw;
+    }
+    
+    h1{
+        font-size: 20vw;
+    }
+    
+    li{
+        font-size: 1.05rem;
+        padding: 14px 18px;
+        width: 100%;
+        border-radius: 16px;
+    }
+    .container{
+        width:100%;
+        max-width:none;
+        padding:16px 12px;
+    }*/
+    
+    @media (max-width: 400px) {
+        
+        .body{padding:8px;}
+        .container{padding:17px;}
+        li{
+            font-size:150%;
+            padding: 10px 5px; border-radius: 16px;
+        }
+        
+        /* .time-input{
+            width:32px; height:32px; background-color: #c3ccde; border-radius: 10px;
+            font-size:20px; font-weight: 600;
+            font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
+        }*/
+        
+        .drag-handle{display: none;}
+        .check-circle{margin-right:0px;}
+        
+        #timer{margin-left: 0;margin-right: 0;}
+        #timer #timerLabel.timer-label{
+            font-size:21px /*!important*/;
+            line-height: 3vh;
+            margin:0px
+        }
+        .app-icon{display: none;}
+        .title-plus-icons{ display: flex;flex-direction: column; align-items:center; padding-bottom:0px;}
+        /* *{outline: solid red;}*/
+        .day-pill{font-size: 3vw;padding: 6px 11px}
+
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}

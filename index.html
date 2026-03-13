@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Training Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--  for use as app  -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../skate icon (1).ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="../skate icon (1).ico">
+    <link rel="icon" type="image/png" sizes="512x512" href="../skate icon (1).ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#8aa5c3" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#202547" media="(prefers-color-scheme: dark)">
+
+    <!-- use Google Poppins for headers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- header font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* override font for whole page with Roboto for sleek look */
+        body { font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif; padding: 20px; }
+        li { margin-bottom: 6px; }
+    </style>
+
+    <audio id="alertSound" src="../workout10sec.mp3" preload="auto"></audio>
+    <script src="../exercise-library.js"></script>
+</head>
+
+<body>
+
+<header>
+    <h1>Workout Generator</h1>
+</header>
+
+<main>
+
+    <!-- CATEGORY SELECTION -->
+    <section id="target-selection">
+        <h2>Select Exercise Types</h2>
+
+        <form id="categorySelect">
+
+            <fieldset>
+                <legend>Select none or more inside the following:</legend>
+
+                <label>Jumps
+                <select id="jumps" name="jump-selection" multiple>
+                    <option value="Axel">Axel</option>
+                    <option value="Salchow">Salchow</option>
+                    <option value="Toe-loop">Toe-loop</option>
+                    <option value="Loop">Loop</option>
+                    <option value="Flip">Flip</option>
+                    <option value="Lutz">Lutz</option>
+                </select>
+                </label>
+
+                <label>Power</label>
+                <select id="power" multiple>
+                    <option value="random">random</option>
+                </select>
+
+                <label>Strength</label>
+                <select id="strength" multiple>
+                    <option value="random">random</option>
+                </select>
+
+                <label>Cardio</label>
+                <select id="cardio" multiple>
+                    <option value="random">random</option>
+                </select>
+
+                <label>Stretching</label>
+                <select id="stretches" multiple>
+                    <option value="random">random</option>
+                </select>
+
+            </fieldset>
+
+            
+
+        </form>
+
+        <section>
+        <h3>Selected Categories</h3>
+
+        <ul id="selectedList">
+            <!-- selected categories appear here -->
+        </ul>
+        </section>
+
+    </section>
+    <button type="button" id="generateWorkout">Generate Workout</button>
+    
+
+    <!-- WORKOUT RESULT PAGE -->
+    <section id="workout-page" class="hidden">
+
+        <div class="container">
+        <div class="main-col">
+            <header class="title-stacked">
+                <div class="title-plus-icons">
+                    <img id="audioUnlockBtn" src="../skate icon (1).ico" class="header-ico" alt="Skate icon" />
+                    <div class="title-with-icon">
+                        <svg class="app-icon" viewBox="0 0 24 24" role="img" aria-hidden="true">
+                            <title>Workout icon</title>
+                            <rect x="1" y="9" width="3" height="6" rx="0.5" />
+                            <rect x="20" y="9" width="3" height="6" rx="0.5" />
+                            <rect x="4" y="10.5" width="16" height="3" rx="0.5" />
+                        </svg>
+                        <h1 class="title-main">Off-ice training</h1>
+                    </div>
+                </div>
+                <div class="day-pill" id="dayName">Monday</div>
+            </header>
+
+            <!-- Timer UI (hidden until an exercise is clicked) style="font-size:28px;font-family:monospace;background:#f7f9fc;padding:8px 14px;border-radius:6px;" -->
+            <div id="timer" style="display:none;">
+                <div class="timer-label" id="timerLabel" style="font-weight:600;margin-bottom:4px">Timer</div>
+                <div class="progress-track" id="timerProgress" aria-hidden="true">
+                    <div class="progress-fill" id="timerProgressFill"></div>
+                </div>
+                <div id="timeDisplay">01:00</div>
+                <div style="margin-top:8px;display:flex;gap:8px;">
+                    <button id="startBtn">Start</button>
+                    <button id="pauseBtn">Pause</button>
+                    <button id="resetBtn">Reset</button>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="side-col">
+            <ul id="workoutList"></ul>
+        </div>
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+// Initial declarations
+const selects = document.querySelectorAll("select");
+const raw_target_list = document.getElementById("selectedList");
+const generateBtn = document.getElementById("generateWorkout");
+const mainOptions = ["Power", "Strength", "Cardio", "Stretch", "random"]
+workoutSelection=[];
+displayItems=[];
+const generatorPage = document.getElementById("target-selection");
+const workoutPage = document.getElementById("workout-page");
+const n_ofExercises = 9;
+const list = document.getElementById("workoutList");
+// always prepend a short warm-up sequence regardless of day/week
+const warmups = [
+    "Warm-up: dynamic stretches",
+    "Warm-up: heart rate"
+];
+
+// Functions to: Extract exercise targets + Populate drop-downs
+function populateTargetSelect(selectId, mainTarget){
+
+    const targets = [...new Set(
+        ExLibrary
+            .filter(ex => ex.targets.includes(mainTarget))
+            .flatMap(ex => ex.targets)
+            .filter(t => !mainOptions.includes(t))  //----------------------------------------------------------FLAG--FIXED
+    )].sort();
+
+    const select = document.getElementById(selectId);
+
+    targets.forEach(target => {
+
+        const option = document.createElement("option");
+
+        option.value = target;
+        option.textContent = target;
+
+        select.appendChild(option);
+
+    });
+}
+// Generate 2 random targets
+function getRandomTargets(elementId){
+    if (Array.from(document.getElementById(elementId).options).map(op => op.value).includes("random")){
+    return randomSample(
+        Array.from(document.getElementById(elementId).options)
+        .map(op => op.value)
+        .filter(v => !mainOptions.includes(v)),  //----------------------------------------------------------FLAG--FIXED
+    2)} else {return null}
+};
+
+// Extract stretch targets (for drop-down selection)
+const stretchTargets = [...new Set(
+    ExLibrary
+        .filter(ex => ex.type=="stretch")
+        .flatMap(ex => ex.targets))].sort();
+
+// Actually populate targets
+populateTargetSelect("power", "Power")
+populateTargetSelect("strength", "Strength")
+populateTargetSelect("cardio", "Cardio")
+// populate stretches
+stretchTargets.forEach(target => {
+        const option = document.createElement("option");
+        option.value = target; option.textContent = target;
+        document.getElementById("stretches").appendChild(option);
+    });
+
+
+// Declare sound
+const alertSound = document.getElementById("alertSound");
+let SoundWasPlaying = false;
+// ChatGPT: unlock audio when user clicks the icon
+document.getElementById("audioUnlockBtn").addEventListener("click", () => {
+    alertSound.muted = true;
+    alertSound.play().then(() => {
+        alertSound.pause();
+        alertSound.currentTime = 0;
+        alertSound.muted = false;
+    }).catch(() => {});
+});
+
+// Helper function: Random Sample
+function randomSample(arr, n) {
+    return [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
+}
+
+// Update the list of selected targets
+selects.forEach(select => {
+    select.addEventListener("change", updateList);
+});
+// Helper function to update target list
+function updateList() {
+
+    raw_target_list.innerHTML = "";
+    selects.forEach(select => {
+
+        const selectedOptions = Array.from(select.selectedOptions);
+        selectedOptions.forEach(option => {
+
+            const li = document.createElement("li");
+            li.textContent = option.text;
+
+            raw_target_list.appendChild(li);
+        });
+    });
+};
+
+// Store target selection by type (Dictionary)
+function getWorkoutSelection(){
+    const selection = {};
+    selects.forEach(select => {
+        selection[select.id] = Array.from(select.selectedOptions)
+            .map(option => option.value);
+    });
+    return selection;
+}
+
+/* Handling 'random' option
+const jumpSelect = document.getElementById("jumps")
+const powerSelect = document.getElementById("power")
+const strengthSelect = document.getElementById("strength")
+const cardioSelect = document.getElementById("cardio")
+const stretchSelect = document.getElementById("stretches")*/
+
+// Function to: Handle 'random' option
+function enableRandomBehavior(selectId){
+
+    const select = document.getElementById(selectId);
+    select.addEventListener("change", () => {
+
+        const options = Array.from(select.options);
+        const randomOption = options.find(o => o.value === "random");
+        const otherOptions = options.filter(o => o.value !== "random");
+
+        // Case 1: Random selected
+        if(randomOption.selected){
+            otherOptions.forEach(o => {
+                o.selected = false;
+                o.disabled = true;
+            });
+        } 
+        // Case 2: Other option selected
+        else if(otherOptions.some(o => o.selected)){
+            randomOption.selected = false;
+            otherOptions.forEach(o => {
+                o.disabled = false;
+            });
+        } 
+        // Case 3: Nothing selected
+        else{
+            otherOptions.forEach(o => {
+                o.disabled = false;
+            });
+        }
+    });
+}
+
+enableRandomBehavior("power");
+enableRandomBehavior("strength");
+enableRandomBehavior("cardio");
+enableRandomBehavior("stretches");
+
+
+
+// Integrate from planner
+
+// ===== Day Class =====
+class Day {
+    constructor(_wkSelection) {
+        this.jumps = null; this.power = null; this.strength = null; this.cardio = null; this.stretches = null;
+
+        
+        Object.keys(_wkSelection).forEach(category => {
+            if(_wkSelection[category]){
+                if (_wkSelection[category].includes("random")){
+                    this[category] = getRandomTargets(category)
+                } else {
+                this[category] = _wkSelection[category]
+                }
+                console.log("--",category)
+                console.log(this[category])
+            }
+        })
+
+        console.log(_wkSelection)
+    }
+
+    getJumps() {
+        return this.jumps || null;
+    }
+
+    getPower() {
+        if (!this.power) return null;
+        
+
+        let result = [];
+        
+        if (typeof this.power === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Power"));
+        } else if (Array.isArray(this.power)) {
+            for (let target of this.power) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Power") && ex.targets.includes(target)));
+            }
+        }
+        result=[...new Set(result)]; // dedupe
+
+        if (result.length > n_ofExercises) {
+            result = randomSample(result, n_ofExercises);
+        }
+        return result.length ? result : null;
+    }
+
+    getStrength() {
+        console.log("this . strength:",this.strength);
+        if (!this.strength) return null;
+
+        let result = [];
+        if (Array.isArray(this.strength)) {
+            for (let target of this.strength) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Strength") && ex.targets.includes(target)));
+            }    
+        } else if (typeof this.strength === "string") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes(this.strength))//-------.map(ex => ex.name);
+
+        } else if (typeof this.strength === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Strength"))//-------.map(ex => ex.name);
+        } 
+        result=[...new Set(result)]; // dedupe
+
+        if (result.length > n_ofExercises) {
+            result = randomSample(result, n_ofExercises);
+        }
+        
+        return result.length ? result : null;
+        
+    }
+    
+    getCardio() {
+        if (!this.cardio) return null;
+        let result = [];
+
+        if (typeof this.cardio === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Cardio"));
+        
+        } else if (Array.isArray(this.cardio)) {
+            for (let target of this.cardio) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Cardio") && ex.targets.includes(target)));
+            }
+            return result;
+        }
+        result=[...new Set(result)]; // dedupe
+
+        if (result.length > n_ofExercises) {
+                result = randomSample(result, n_ofExercises);
+            }
+        return result.length ? result : null;
+    }
+
+    getStretches() {
+        if (!this.stretches) return null;
+
+        let result = [];
+        if (typeof this.stretches === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "stretch");
+        } else if (Array.isArray(this.stretches)) {
+            for (let target of this.stretches) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "stretch" && ex.targets.includes(target)));
+            }
+        }
+
+
+        console.log("stretches from method:",result)
+
+        result=[...new Set(result)];   // dedupe
+
+        if (result.length > n_ofExercises) {
+            result = randomSample(result, n_ofExercises);
+        }
+        return result.length ? result : null;
+    }
+
+    getALL() {
+        let todos = [];
+        if (this.getJumps()) todos.push(...this.getJumps());
+        if (this.getPower()) todos.push(...this.getPower());
+        if (this.getStrength()) todos.push(...this.getStrength());
+        if (this.getCardio()) todos.push(...this.getCardio());
+        if (this.getStretches()) todos.push(...this.getStretches());
+
+
+        console.log(this.jumps,this.power,this.strength,this.cardio,this.stretches)
+        console.log("TODOS: ",todos)
+        return todos;
+    }
+
+    toString() {
+        return `Day: ${this.day}`;
+    }
+}
+
+// ===== Create Day Plan =====
+genHidden = false
+generateBtn.addEventListener("click", () => {
+    if(raw_target_list.children.length > 0){
+        
+
+        generatorPage.classList.toggle("hidden");
+        workoutPage.classList.toggle("hidden");
+    
+        if(genHidden){genHidden=false} 
+        else {genHidden=true;
+            workoutSelection = getWorkoutSelection();
+            const todayObj = new Day(workoutSelection);
+            const workoutItems = todayObj.getALL();
+            displayItems = workoutItems && workoutItems.length ? [...warmups, ...workoutItems] : [...warmups];
+
+            console.log("workoutSelection= ",workoutSelection)
+            console.log("workoutItems= ",workoutItems)
+
+
+
+
+            renderList();
+
+        }
+    }
+
+});
+
+
+
+
+
+// persistence for duration presets per exercise (minutes only)
+const presetKey = 'workoutDurations';
+function loadPresets(){
+    try { return JSON.parse(localStorage.getItem(presetKey)) || {}; }
+    catch(e){ return {}; }
+}
+function savePresets(obj){
+    try { localStorage.setItem(presetKey, JSON.stringify(obj)); }
+    catch(e){ console.warn('could not save presets',e); }
+}
+const presets = loadPresets();
+
+// ===== Simple Timer =====
+class Timer {
+    constructor(displayElem, labelElem) {
+        this.display = displayElem;
+        this.labelElem = labelElem;
+        this.duration = 60; // default seconds
+        this.remaining = this.duration;
+        this.interval = null;
+        this.currentLabel = "Timer";
+        this.onFinish = null; // called when countdown reaches zero
+        this.update();
+    }
+
+    format(t) {
+        const m = Math.floor(t / 60).toString().padStart(2, '0');
+        const s = (t % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    update() {
+        this.display.textContent = this.format(this.remaining);
+        this.labelElem.textContent = this.currentLabel;
+        if (this.progressFill) {
+            const pct = this.duration > 0 ? ((this.duration - this.remaining) / this.duration) * 100 : 0;
+            this.progressFill.style.width = Math.max(0, Math.min(100, pct)) + '%';
+        }
+    }
+
+    start() {
+        if (this.interval) return;
+
+        this.interval = setInterval(() => {
+
+            if (this.remaining === 11) {
+                alertSound.play().catch(()=>{});
+            }
+            if (this.remaining <= 0) {
+                this.pause();
+                if (typeof this.onFinish === 'function') {
+                    this.onFinish();
+                }
+                return;
+            }
+            this.remaining -= 1;
+            this.update();
+        }, 1000);
+
+        // if sound was playing before, resume it when timer starts again
+        if (SoundWasPlaying) {
+            alertSound.play().catch(()=>{});
+            SoundWasPlaying = false;
+        }
+    }
+
+    pause() {
+        if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+        }
+        if (!alertSound.paused) {
+            SoundWasPlaying = true;
+            alertSound.pause();
+        } else {
+            SoundWasPlaying = false;
+        }
+    }
+
+    reset() {
+        this.pause();
+        this.remaining = this.duration;
+        this.update();
+    }
+
+    setDuration(seconds) {
+        this.duration = Math.max(0, Math.floor(seconds));
+        this.remaining = this.duration;
+        this.update();
+    }
+
+    setLabel(text) {
+        this.currentLabel = text || "Timer";
+        this.update();
+    }
+}
+
+const timeDisplay = document.getElementById('timeDisplay');
+const timerLabel = document.getElementById('timerLabel');
+const startBtn = document.getElementById('startBtn');
+const pauseBtn = document.getElementById('pauseBtn');
+const resetBtn = document.getElementById('resetBtn');
+const timer = new Timer(timeDisplay, timerLabel);
+// attach progress fill element to timer for visual progress updates
+const timerProgressFill = document.getElementById('timerProgressFill');
+timer.progressFill = timerProgressFill;
+const timerContainer = document.getElementById('timer');
+
+
+// when timer completes, tick the current exercise if not already done
+let currentCheck = null;
+let currentLi = null;
+timer.onFinish = () => {
+    if (currentCheck && currentCheck.getAttribute('aria-pressed') === 'false') {
+        currentCheck.click();
+    }
+};
+
+startBtn.addEventListener('click', () => timer.start());
+pauseBtn.addEventListener('click', () => timer.pause());
+resetBtn.addEventListener('click', () => timer.reset());
+resetBtn.addEventListener('click', () => {
+    timer.reset();
+    if (currentLi) {
+        currentLi.classList.remove('current');
+        currentLi = null;
+    }
+    currentCheck = null;
+});
+
+
+// helper to redraw list based on displayItems
+function renderList(){
+    list.innerHTML = '';
+    displayItems.forEach((item,index) => {
+        const li = document.createElement("li");
+        li.setAttribute('data-order', index);
+        li.tabIndex = 0;
+        li.title = 'Click to start timer';
+
+        /*TESTING COLORS AND TYPES*/
+        li.className = item.type || "";
+        item = item.name || item;
+
+        li.draggable = false; // only handle will be draggable
+        // drag handle (will be appended to right controls so checkbox/label stay flush left)
+        const handle = document.createElement('span');
+        handle.draggable = true;
+        handle.className = 'drag-handle';
+        handle.textContent = '☰';
+        handle.title = 'Drag to reorder';
+        handle.addEventListener('mousedown', e=> e.stopPropagation());
+        
+        handle.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', index.toString());
+            e.dataTransfer.effectAllowed = 'move';
+            li.classList.add('dragging');
+        });
+        handle.addEventListener('dragend', () => {
+            li.classList.remove('dragging');
+        });
+        li.addEventListener('dragover', e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const dragging = document.querySelector('.dragging');
+            if (!dragging || dragging === li) return;
+            const fromIndex = parseInt(dragging.getAttribute('data-order'),10);
+            const toIndex = index;
+            if (isNaN(fromIndex)) return;
+            // move visual only, array updated on drop
+            // insert placeholder depending on position
+            const bounding = li.getBoundingClientRect();
+            const offset = e.clientY - bounding.top;
+            if (offset > bounding.height/2) {
+                li.after(dragging);
+            } else {
+                li.before(dragging);
+            }
+        });
+        li.addEventListener('drop', e => {
+            e.preventDefault();
+            const from = parseInt(e.dataTransfer.getData('text/plain'),10);
+            const to = index;
+            if (isNaN(from) || from === -1 || to === -1) return;
+            const [moved] = displayItems.splice(from,1);
+            displayItems.splice(to,0,moved);
+            renderList();
+        });
+
+        // left group: check button + label
+        const left = document.createElement('div');
+        left.className = 'item-left';
+        left.style.display = 'flex';
+        left.style.alignItems = 'center';
+
+        const checkBtn = document.createElement('button');
+        checkBtn.className = 'check-circle';
+        checkBtn.setAttribute('aria-pressed', 'false');
+        checkBtn.setAttribute('aria-label', `Mark ${item} done`);
+
+        const label = document.createElement('span');
+        label.className = 'exercise-label';
+        label.textContent = item;
+
+        // custom duration input (seconds)
+        const timeInput = document.createElement('input');
+        timeInput.type = 'number';
+        timeInput.className = 'time-input';
+        timeInput.min = '1';
+        timeInput.value = '1';
+        timeInput.title = 'duration';
+        timeInput.addEventListener('click', e => e.stopPropagation());
+        timeInput.addEventListener('keydown', e => e.stopPropagation());
+
+        // handle presets (minutes only)
+        const applyPreset = () => {
+            const p = presets[item];
+            if(p){
+                timeInput.value = p.value;
+            }
+        };
+        const store = () => {
+            presets[item] = { value: timeInput.value };
+            savePresets(presets);
+        };
+        timeInput.addEventListener('change', () => { store(); });
+
+        left.appendChild(checkBtn);
+        left.appendChild(label);
+        left.appendChild(timeInput);
+        applyPreset();
+
+        // right group: time selectors and controls
+        const right = document.createElement('div');
+        right.className = 'item-right';
+
+        // up/down buttons (small)
+        const controls = document.createElement('div');
+        controls.style.display = 'flex';
+        controls.style.flexDirection = 'column';
+        controls.style.gap = '4px';
+
+        const upBtn = document.createElement('button');
+        upBtn.className = 'small-arrow';
+        upBtn.textContent = '▲';
+        upBtn.title = 'Move up';
+        upBtn.addEventListener('click', e=>{
+            e.stopPropagation();
+            if(index>0){
+                [displayItems[index-1],displayItems[index]] = [displayItems[index],displayItems[index-1]];
+                renderList();
+            }
+        });
+        const downBtn = document.createElement('button');
+        downBtn.className = 'small-arrow';
+        downBtn.textContent = '▼';
+        downBtn.title = 'Move down';
+        downBtn.addEventListener('click', e=>{
+            e.stopPropagation();
+            if(index<displayItems.length-1){
+                [displayItems[index+1],displayItems[index]] = [displayItems[index],displayItems[index+1]];
+                renderList();
+            }
+        });
+        controls.appendChild(upBtn);
+        controls.appendChild(downBtn);
+
+        // place time input in right group
+        right.appendChild(timeInput);
+        // append drag handle into right so left content stays flush-left
+        right.appendChild(handle);
+        right.appendChild(controls);
+
+        // assemble: left (text) + right (selectors/controls)
+        li.appendChild(left);
+        li.appendChild(right);
+
+        // toggle done
+        checkBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isDone = li.classList.toggle('done');
+            checkBtn.setAttribute('aria-pressed', isDone);
+            if (isDone && currentCheck === checkBtn) {
+                currentCheck = null;
+            }
+            // if item marked done, remove current highlight
+            if (isDone && li.classList.contains('current')) {
+                li.classList.remove('current');
+                if (currentLi === li) currentLi = null;
+            }
+        });
+
+        // click starts timer
+        li.addEventListener('click', () => {
+            let seconds = (parseInt(timeInput.value, 10) || 1) * 60;
+            // reveal timer when an exercise is selected
+            if (timerContainer) timerContainer.style.display = 'flex';
+            timer.setLabel(item);
+            timer.setDuration(seconds);
+            // clear previous current highlight
+            if (currentLi && currentLi !== li) {
+                currentLi.classList.remove('current');
+            }
+            li.classList.add('current');
+            currentLi = li;
+            currentCheck = checkBtn;
+            timer.start();
+        });
+
+        list.appendChild(li);
+    });
+}
+
+</script>
+
+</body>
+</html>
