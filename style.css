@@ -270,21 +270,21 @@ ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;width:100%;}
     border-radius:10px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
     cursor:pointer;color:var(--text);font-weight:600;width:100%;box-sizing:border-box;
 }
-li.stretch{background:var(--s-unc)}
-li.exercise{background:var(--e-unc)}
+#workoutList li.stretch{background:var(--s-unc)}
+#workoutList li.exercise{background:var(--e-unc)}
 
 .side-col{flex:1 1 280px;display:flex;justify-content:flex-end}
 
 .item-left{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0}
 .item-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 
-li:hover{background:var(--accent-2);transform:translateY(-4px);box-shadow:0 12px 24px rgba(2,6,23,0.06);}
-li.exercise:hover{background:var(--e-hover)}
-li.stretch:hover{background:var(--s-hover)}
+#workoutList li:hover{background:var(--accent-2);transform:translateY(-4px);box-shadow:0 12px 24px rgba(2,6,23,0.06);}
+#workoutList li.exercise:hover{background:var(--e-hover)}
+#workoutList li.stretch:hover{background:var(--s-hover)}
 li .meta{font-size:12px;color:var(--muted);font-weight:500}
 
 /* Focus for keyboard accessibility */
-li:focus{outline:3px solid rgba(37,99,235,0.18);outline-offset:2px}
+#workoutList li:focus{outline:3px solid rgba(37,99,235,0.18);outline-offset:2px}
 
 /* Responsive */
 @media (max-width:680px){
@@ -295,7 +295,7 @@ li:focus{outline:3px solid rgba(37,99,235,0.18);outline-offset:2px}
     .container{padding:18px}
     button{padding:8px 10px;font-size:13px}
     .exercise-label{font-size:14px}
-    li.time-input{width:10px;padding:0px 0px;font-size:12px}
+    #workoutList li.time-input{width:10px;padding:0px 0px;font-size:12px}
 }
 
 /* small utility */
@@ -331,22 +331,22 @@ li:focus{outline:3px solid rgba(37,99,235,0.18);outline-offset:2px}
 .check-circle::after{content:'';font-size:14px;color:white;display:block;opacity:0;transition:opacity .12s;}
 .check-circle[aria-pressed="true"]::after{content:'✓';opacity:1}
 
-li.done{opacity:0.5;color:var(--muted)}
-li.done .exercise-label{text-decoration:line-through}
+#workoutList li.done{opacity:0.5;color:var(--muted)}
+#workoutList li.done .exercise-label{text-decoration:line-through}
 
-li.dragging{opacity:0.4;}
+#workoutList li.dragging{opacity:0.4;}
 
 /* Exercise labels in list */
 .exercise-label{font-weight:600;font-family:'Poppins', 'Roboto', sans-serif}
 
 /* current (active) item while timer is running */
-.current{background:var(--j-current);color:#fff;box-shadow:0 12px 30px var(--j-shadow)}
-.current.exercise{background:var(--e-current);box-shadow:0 12px 30px var(--e-shadow)}
-.current.stretch{background:var(--s-current);box-shadow:0 12px 30px var(--s-shadow)}
-.current .exercise-label{color:#fff}
-.current .check-circle{border-color:rgba(255,255,255,0.35);color:#fff}
-.current .time-input{background:rgba(255,255,255,0.06);color:#fff;border-color:rgba(255,255,255,0.12)}
-.current .drag-handle{color:rgba(255,255,255,0.8)}
+#workoutList li.current{background:var(--j-current);color:#fff;box-shadow:0 12px 30px var(--j-shadow)}
+#workoutList li.current.exercise{background:var(--e-current);box-shadow:0 12px 30px var(--e-shadow)}
+#workoutList li.current.stretch{background:var(--s-current);box-shadow:0 12px 30px var(--s-shadow)}
+#workoutList li.current .exercise-label{color:#fff}
+#workoutList li.current .check-circle{border-color:rgba(255,255,255,0.35);color:#fff}
+#workoutList li.current .time-input{background:rgba(255,255,255,0.06);color:#fff;border-color:rgba(255,255,255,0.12)}
+#workoutList li.current .drag-handle{color:rgba(255,255,255,0.8)}
 
 /* drag handle */
 .drag-handle{
