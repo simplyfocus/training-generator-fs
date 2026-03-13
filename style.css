@@ -95,19 +95,55 @@ body{
     -webkit-font-smoothing:antialiased;
 }
 
-
+#categorySelect fieldset {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+#categorySelect legend {
+    color:var(--text);
+    font-weight: 200;
+    padding: 0 10px;
+}
+#categorySelect label {
+    color:var(--text);
+    line-height:25px;
+    display: block;
+    margin-bottom: 0px;
+}
+#categorySelect select {
+    width: 100%;
+    min-height: 100px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+#categorySelect select:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 4px rgba(74,144,226,0.4);
+}
 
 #selectedList {
+    display:flex;
+    flex-wrap: wrap;
     list-style: none;
-    padding: 0;
+    gap:1vh;
 }
 
 #selectedList li {
     display: inline-block;
-    background: #eee;
-    padding: 6px 10px;
-    margin: 5px;
-    border-radius: 6px;
+    background: var(--timerboxtop);
+    border-radius: 20px;
+    padding:14px 16px;
+    font-size:clamp(14px,2vw,17px);
+    padding:8px 10px;
+    font-family: 'Poppins';
 }
 
 /* Main container */
@@ -159,10 +195,10 @@ h1{
     font-family: 'Poppins', sans-serif;
 }
 h2{
-    margin:0 0 18px 0;
+    margin:15px 0 10px 30px;
     font-size:14px;
-    text-align:center;
-    color:var(--muted);
+    text-align:left;
+    color:var(--timerboxtop);
     font-family: 'Poppins', sans-serif;
 }
 
@@ -228,7 +264,7 @@ button#resetBtn{background:#ef4444}
 ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;width:100%;}
 
 /* make each item full width and split into left/right areas */
-li{
+#workoutList li{
     display:flex;align-items:center;justify-content:space-between;
     gap:12px;padding:12px 14px;background:var(--accent);
     border-radius:10px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
@@ -358,7 +394,7 @@ li.dragging{opacity:0.4;}
         align-self:flex-start;
     }
     #timer{padding:12px 14px;}
-    li{
+    #workoutList li{
         padding:10px 14px;
     }
 
@@ -379,8 +415,6 @@ li.dragging{opacity:0.4;}
     .container{
         grid-template-columns: 1fr;
         gap:20px;
-    }
-    .container{
         width:100%;
         width:90vw;
         padding:20px;
@@ -398,8 +432,6 @@ li.dragging{opacity:0.4;}
         max-height:60vh;
         overflow-y:auto;
         -webkit-overflow-scrolling:touch;
-    }
-    .side-col{
         max-height:70vh;
         overflow-y:auto;
         padding-top: 10px;
@@ -407,16 +439,12 @@ li.dragging{opacity:0.4;}
 
     ul{
         width:100%;
-    }
-    ul{
         gap:14px;
     }
 
     li{
         padding:14px 16px;
         font-size:15px;
-    }
-    li{
         padding:8px 10px;
         border-radius:16px;
         font-size:18px;
@@ -500,7 +528,7 @@ li.dragging{opacity:0.4;}
         
         .body{padding:8px;}
         .container{padding:17px;}
-        li{
+        #workoutList li{
             font-size:150%;
             padding: 10px 5px; border-radius: 16px;
         }
@@ -520,10 +548,14 @@ li.dragging{opacity:0.4;}
             line-height: 3vh;
             margin:0px
         }
+
+        /*hide svg*/
         .app-icon{display: none;}
-        .title-plus-icons{ display: flex;flex-direction: column; align-items:center; padding-bottom:0px;}
-        /* *{outline: solid red;}*/
-        .day-pill{font-size: 3vw;padding: 6px 11px}
+        .title-stacked .title-plus-icons{ display: flex; flex-direction: row; align-items:center; justify-content:center; padding-bottom:0px;}
+        .title-with-icon .title-main{margin:0; line-height: 1; padding-left: 5px; padding-bottom:0px; font-size: 5vw;}
+        .title-plus-icons #audioUnlockBtn{height:20%; width:20%; align-self:center; margin:0 0 0px;margin-right: 0.7vw;}
+        .day-pill{display:none}
+
 
     }
 }
