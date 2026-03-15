@@ -75,7 +75,7 @@
         </section>
 
         <button type="button" class="funkyBtn" id="generateWorkout">Generate Workout</button>
-        <button type="button" class="funkyBtn" onclick="window.location.href='https://simplyfocus.github.io/training-planner-fs/'">Use Planned Training instead</button>
+        <button type="button" class="funkyBtn" id="usePlanBtn" onclick="makeTrainingList(true)">Use Planned Training instead</button>
 
     </section>
     <!-- WORKOUT RESULT PAGE -->
@@ -126,10 +126,15 @@
 
 
 <script>
+// ===== Date Setup =====
+const today = new Date();
+const todayWD = (today.getDay() + 6) % 7; // 0 = Monday
+
 // Initial declarations
 const selects = document.querySelectorAll("select");
 const raw_target_list = document.getElementById("selectedList");
 const generateBtn = document.getElementById("generateWorkout");
+const planBtn = document.getElementById("usePlanBtn")
 const mainOptions = ["Power", "Strength", "Cardio", "Stretch", "random"]
 workoutSelection=[];
 displayItems=[];
@@ -150,7 +155,7 @@ function populateTargetSelect(selectId, mainTarget){
         ExLibrary
             .filter(ex => ex.targets.includes(mainTarget))
             .flatMap(ex => ex.targets)
-            .filter(t => !mainOptions.includes(t))  //----------------------------------------------------------FLAG--FIXED
+            .filter(t => !mainOptions.includes(t))
     )].sort();
 
     const select = document.getElementById(selectId);
@@ -166,15 +171,6 @@ function populateTargetSelect(selectId, mainTarget){
 
     });
 }
-// Generate 2 random targets
-function getRandomTargets(elementId){
-    if (Array.from(document.getElementById(elementId).options).map(op => op.value).includes("random")){
-    return randomSample(
-        Array.from(document.getElementById(elementId).options)
-        .map(op => op.value)
-        .filter(v => !mainOptions.includes(v)),  //----------------------------------------------------------FLAG--FIXED
-    2)} else {return null}
-};
 
 // Extract stretch targets (for drop-down selection)
 const stretchTargets = [...new Set(
@@ -193,13 +189,7 @@ stretchTargets.forEach(target => {
         document.getElementById("stretches").appendChild(option);
 });
 
-function moveElement(_id,_from,_to){
-    const element=document.getElementById(_id)
-    const from=document.getElementById(_from)
-    const to=document.getElementById(_to)
 
-    to.appendChild(element)
-}
 
 // Declare sound
 const alertSound = document.getElementById("alertSound");
@@ -214,31 +204,6 @@ document.getElementById("audioUnlockBtn").addEventListener("click", () => {
     }).catch(() => {});
 });
 
-// Helper function: Random Sample
-function randomSample(arr, n) {
-    return [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
-}
-
-// Update the list of selected targets
-selects.forEach(select => {
-    select.addEventListener("change", updateList);
-});
-// Helper function to update target list
-function updateList() {
-
-    raw_target_list.innerHTML = "";
-    selects.forEach(select => {
-
-        const selectedOptions = Array.from(select.selectedOptions);
-        selectedOptions.forEach(option => {
-
-            const li = document.createElement("li");
-            li.textContent = option.text;
-
-            raw_target_list.appendChild(li);
-        });
-    });
-};
 
 // Store target selection by type (Dictionary)
 function getWorkoutSelection(){
@@ -250,52 +215,28 @@ function getWorkoutSelection(){
     return selection;
 }
 
-/* Handling 'random' option
+// Handling 'random' option
 const jumpSelect = document.getElementById("jumps")
 const powerSelect = document.getElementById("power")
 const strengthSelect = document.getElementById("strength")
 const cardioSelect = document.getElementById("cardio")
-const stretchSelect = document.getElementById("stretches")*/
+const stretchSelect = document.getElementById("stretches")
 
 // Function to: Handle 'random' option
-function enableRandomBehavior(selectId){
-
-    const select = document.getElementById(selectId);
-    select.addEventListener("change", () => {
-
-        const options = Array.from(select.options);
-        const randomOption = options.find(o => o.value === "random");
-        const otherOptions = options.filter(o => o.value !== "random");
-
-        // Case 1: Random selected
-        if(randomOption.selected){
-            otherOptions.forEach(o => {
-                o.selected = false;
-                o.disabled = true;
-            });
-        } 
-        // Case 2: Other option selected
-        else if(otherOptions.some(o => o.selected)){
-            randomOption.selected = false;
-            otherOptions.forEach(o => {
-                o.disabled = false;
-            });
-        } 
-        // Case 3: Nothing selected
-        else{
-            otherOptions.forEach(o => {
-                o.disabled = false;
-            });
-        }
-    });
+function enableRandomBehavior(select){
+    select._prevRandom = false;
+    select.addEventListener("change",updateRandom);
 }
 
-enableRandomBehavior("power");
-enableRandomBehavior("strength");
-enableRandomBehavior("cardio");
-enableRandomBehavior("stretches");
+enableRandomBehavior(powerSelect);
+enableRandomBehavior(strengthSelect);
+enableRandomBehavior(cardioSelect);
+enableRandomBehavior(stretchSelect);
 
-
+// Update the list of selected targets
+selects.forEach(select => {
+    select.addEventListener("change",updateList);
+});
 
 // Integrate from planner
 
@@ -304,7 +245,6 @@ class Day {
     constructor(_wkSelection) {
         this.jumps = null; this.power = null; this.strength = null; this.cardio = null; this.stretches = null;
 
-        
         Object.keys(_wkSelection).forEach(category => {
             if(_wkSelection[category]){
                 if (_wkSelection[category].includes("random")){
@@ -316,7 +256,6 @@ class Day {
                 // console.log(this[category])
             }
         })
-
         // console.log(_wkSelection)
     }
 
@@ -438,38 +377,8 @@ class Day {
 
 // ===== Create Day Plan =====
 genHidden = false
-generateBtn.addEventListener("click", () => {
-    if(raw_target_list.children.length > 0){
-        
-
-        generatorPage.classList.toggle("hidden");
-        workoutPage.classList.toggle("hidden");
-        generateBtn.classList.toggle("middled")
-    
-        if(genHidden){genHidden=false;moveElement("generateWorkout","titleStacked","target-selection"); timer.pause();document.getElementById("timer").style="display: none"} 
-        else {genHidden=true;
-            workoutSelection = getWorkoutSelection();
-            const todayObj = new Day(workoutSelection);
-            const workoutItems = todayObj.getALL();
-            displayItems = workoutItems && workoutItems.length ? [...warmups, ...workoutItems] : [...warmups];
-
-            // console.log("workoutSelection= ",workoutSelection)
-            // console.log("workoutItems= ",workoutItems)
-
-            moveElement("generateWorkout","target-selection","titleStacked")
-
-
-
-
-
-            renderList();
-
-        }
-    }
-
-});
-
-
+generateBtn.addEventListener("click", () => {makeTrainingList(false)} );
+// planBtn.addEventListener("click",makeTrainingList(true))
 
 
 
