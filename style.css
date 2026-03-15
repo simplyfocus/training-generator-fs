@@ -32,6 +32,12 @@
 
     --e-hover: #995cad5f;
     --s-hover: #66c4dc3a;
+
+    --jmpSelect: #7088cb;
+    --powSelect: #9f6dcd;
+    --stgSelect: #ba9567;
+    --carSelect: #73c26b;
+    --stcSelect: #67bca0;
 }
 
 /* Dark mode overrides using media query */
@@ -161,12 +167,35 @@ button:active{transform:translateY(0);}
     padding:8px 10px;
     font-family: 'Poppins';
 }
+
+#selectedList li.jumps {
+  background: var(--jmpSelect);
+}
+
+#selectedList li.power {
+  background: var(--powSelect);
+}
+
+#selectedList li.strength {
+  background: var(--stgSelect);
+}
+
+#selectedList li.cardio {
+  background: var(--carSelect);
+}
+
+#selectedList li.stretches {
+  background: var(--stcSelect);
+}
+
 button.funkyBtn{color:var(--text);
     padding:6px 12px;border:3px solid transparent;border-radius:999px;font-weight:700;font-size:13px;
     background:
     linear-gradient(45deg, var(--timertitle), var(--card)) padding-box,
     linear-gradient(90deg, var(--j-current), var(--barpurple)) border-box;
+    margin:0 10px 10px 0;
 }
+
 
 
 /* Main container */
