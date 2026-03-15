@@ -94,3 +94,152 @@ const ExLibrary = [
             {name: "Straddle", type:"stretch", targets:["Middle split"]},
             {name: "Wall shoulder stretch", type:"stretch", targets:["Shoulders"]},
 ];
+
+// Load planned program
+function loadPlan(day){
+    jumps=null;power=null;strength=null;cardio=null;stretches=null;
+    if (day === 0) {
+        jumps = ["Axel","Toe-loop","Salchow"];
+        cardio = "random";
+    } else if (day === 1) {
+        jumps = ["Salchow","Toe-loop"];
+        strength = ["Balance","Arms","Shoulders","Core","Back"];
+    } else if (day === 2) {
+        strength = ["Balance","Core","Glutes","Hamstrings","Hip flexors","Quads","Calves"];
+        stretches = ["Front split","Extensions"];
+    } else if (day === 3) {
+        stretches = ["Shoulders","Ankles","Middle split","Back"];
+    } else if (day === 4) {
+        jumps = ["Loop", "Flip", "Lutz"];
+    } else if (day === 5) {
+        jumps = ["Axel","Loop","Rotations","Flip","Lutz"];
+        power = "random";
+        stretches = ["Hips","Turnout"];
+    } else {
+        power = "random";
+        cardio = "random";
+    }
+    return {"jumps":jumps, "power":power, "strength":strength, "cardio":cardio, "stretches":stretches}
+}
+
+// Move an element
+function moveElement(_id,_to){
+    const element=document.getElementById(_id)
+    const to=document.getElementById(_to)
+
+    to.appendChild(element)
+}
+
+// Helper function: Random Sample
+function randomSample(arr, n) {
+    return [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
+}
+
+// Helper function to update target list
+function updateList() {
+
+    raw_target_list.innerHTML = "";
+    selects.forEach(select => {
+
+        const selectedOptions = Array.from(select.selectedOptions);
+        const category = select.id;   // jumps, strength, cardio, etc.
+
+        selectedOptions.forEach(option => {
+
+            const li = document.createElement("li");
+            li.textContent = option.text;
+            li.classList.add(category);  // add "category" class
+
+            raw_target_list.appendChild(li);
+        });
+    });
+    
+};
+
+// Clear selections
+function clearSelections(){
+    document.querySelectorAll("select").forEach(s => {
+        s.selectedIndex = -1;
+    });
+    updateList();
+}
+
+// Update Random
+function updateRandom(e){
+
+    const select = e.target;
+    const options = Array.from(select.options);
+
+    const random = options.find(o => o.value === "random");
+    if (!random) return;
+
+    const others = options.filter(o => o !== random);
+
+    // previous state stored on the select element
+    const prevRandom = select._prevRandom || false;
+
+    const randomNow = random.selected;
+    const otherSelected = others.some(o => o.selected);
+
+    // Case 1: user just clicked random
+    if (!prevRandom && randomNow) {
+        others.forEach(o => o.selected = false);
+    }
+
+    // Case 2: user clicked another option while random was selected
+    if (prevRandom && otherSelected) {
+        random.selected = false;
+    }
+
+    // save state for next change
+    select._prevRandom = random.selected;
+
+    console.log("updated random", select)
+}
+
+// Generate 2 random targets
+function getRandomTargets(elementId){
+    if (Array.from(document.getElementById(elementId).options).map(op => op.value).includes("random")){
+    return randomSample(
+        Array.from(document.getElementById(elementId).options)
+        .map(op => op.value)
+        .filter(v => !mainOptions.includes(v)),
+    2)} else {return null}
+};
+
+function makeTrainingList(plan){
+    if (typeof(plan)!="boolean"){
+        console.log("Error: plan must be boolean.",plan);
+        return -1
+    }
+    console.log("genHidden:",genHidden,"plan:",plan)
+    
+    if((raw_target_list.children.length > 0)||(plan||genHidden)){
+
+        generatorPage.classList.toggle("hidden");
+        workoutPage.classList.toggle("hidden");
+        generateBtn.classList.toggle("middled")
+    
+        if(genHidden){genHidden=false;moveElement("generateWorkout","target-selection");moveElement("usePlanBtn","target-selection")
+            timer.pause();document.getElementById("timer").style="display: none"
+        } else {genHidden=true;
+            if (plan){ workoutSelection=loadPlan(todayWD); clearSelections()} else {workoutSelection = getWorkoutSelection();}
+            
+            const todayObj = new Day(workoutSelection);
+            const workoutItems = todayObj.getALL();
+            displayItems = workoutItems && workoutItems.length ? [...warmups, ...workoutItems] : [...warmups];
+
+            // console.log("workoutSelection= ",workoutSelection)
+            // console.log("workoutItems= ",workoutItems)
+
+            moveElement("generateWorkout","titleStacked")
+
+
+
+
+
+            renderList();
+
+        }
+    }
+}
