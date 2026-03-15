@@ -15,10 +15,13 @@
 
     --text:#071232;
     --colordark:#0f172a;
-    --timerboxtop:rgba(152, 169, 193, 0.9);
-    --timerboxbttm:rgba(181, 202, 220, 0.9);
+    --timerboxtop:rgba(181, 202, 220, 0.9);
+    --timerboxbttm:rgba(152, 169, 193, 0.9);
     --timertitle:#2c2e2f;
     --barpurple:#8b5cf6;
+
+    --funkyLeft: #ffffff75 /*#9682cc31;*/;
+    --funkyRight: #ffffff60 /*#5573f631;*/;
 
     --e-unc:#632b765f;
     --s-unc:#2c93ad34;
@@ -59,6 +62,9 @@
         --timerboxbttm:rgba(57, 82, 104, 0.9);
         --timertitle:#1a0e72;
         --barpurple:#7e3cf0;
+
+        --funkyLeft: var(--timertitle);
+        --funkyRight: var(--card);
 
         
     }
@@ -191,7 +197,7 @@ button:active{transform:translateY(0);}
 button.funkyBtn{color:var(--text);
     padding:6px 12px;border:3px solid transparent;border-radius:999px;font-weight:700;font-size:13px;
     background:
-    linear-gradient(45deg, var(--timertitle), var(--card)) padding-box,
+    linear-gradient(45deg, var(--funkyLeft), var(--funkyRight)) padding-box,
     linear-gradient(90deg, var(--j-current), var(--barpurple)) border-box;
     margin:0 10px 10px 0;
 }
