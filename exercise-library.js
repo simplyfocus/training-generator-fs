@@ -130,6 +130,43 @@ function randomSample(arr, n) {
     return [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
 }
 
+//Function: format time
+function formatTime(seconds){
+
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+
+  return (
+    String(m).padStart(2,"0") +
+    ":" +
+    String(s).padStart(2,"0")
+  );
+}
+
+// Function: Extract exercise targets + Populate drop-downs
+function populateTargetSelect(selectId, mainTarget){
+
+    const targets = [...new Set(
+        ExLibrary
+            .filter(ex => ex.targets.includes(mainTarget))
+            .flatMap(ex => ex.targets)
+            .filter(t => !mainOptions.includes(t))
+    )].sort();
+
+    const select = document.getElementById(selectId);
+
+    targets.forEach(target => {
+
+        const option = document.createElement("option");
+
+        option.value = target;
+        option.textContent = target;
+
+        select.appendChild(option);
+
+    });
+}
+
 // Helper function to update target list
 function updateList() {
 
@@ -202,39 +239,127 @@ function getRandomTargets(elementId){
     2)} else {return null}
 };
 
-function makeTrainingList(plan){
-    if (typeof(plan)!="boolean"){
-        console.log("Error: plan must be boolean.",plan);
-        return -1
+// Store target selection by type (Dictionary)
+function getWorkoutSelection(){
+    const selection = {};
+    selects.forEach(select => {
+        selection[select.id] = Array.from(select.selectedOptions)
+            .map(option => option.value);
+    });
+    return selection;
+}
+
+// ===== Day Class =====
+class Day {
+    constructor(_wkSelection) {
+        this.jumps = null; this.power = null; this.strength = null; this.cardio = null; this.stretches = null;
+
+        Object.keys(_wkSelection).forEach(category => {
+            if(_wkSelection[category]){
+                if (_wkSelection[category].includes("random")){
+                    this[category] = getRandomTargets(category)
+
+                } else { this[category] = _wkSelection[category]}
+            }
+        })
     }
-    console.log("genHidden:",genHidden,"plan:",plan)
-    
-    if((raw_target_list.children.length > 0)||(plan||genHidden)){
 
-        generatorPage.classList.toggle("hidden");
-        workoutPage.classList.toggle("hidden");
-        generateBtn.classList.toggle("middled")
-    
-        if(genHidden){genHidden=false;moveElement("generateWorkout","target-selection");moveElement("usePlanBtn","target-selection")
-            timer.pause();document.getElementById("timer").style="display: none"
-        } else {genHidden=true;
-            if (plan){ workoutSelection=loadPlan(todayWD); clearSelections()} else {workoutSelection = getWorkoutSelection();}
-            
-            const todayObj = new Day(workoutSelection);
-            const workoutItems = todayObj.getALL();
-            displayItems = workoutItems && workoutItems.length ? [...warmups, ...workoutItems] : [...warmups];
+    getJumps() {
+        return this.jumps || null;
+    }
 
-            // console.log("workoutSelection= ",workoutSelection)
-            // console.log("workoutItems= ",workoutItems)
+    getPower() {
+        if (!this.power) return null;
 
-            moveElement("generateWorkout","titleStacked")
-
-
-
-
-
-            renderList();
-
+        let result = [];
+        
+        if (typeof this.power === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Power"));
+        } else if (Array.isArray(this.power)) {
+            for (let target of this.power) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Power") && ex.targets.includes(target)));
+            }
         }
+        result=[...new Set(result)]; // dedupe
+        if (result.length > n_ofExercises) { result = randomSample(result, n_ofExercises);}
+
+        return result.length ? result : null;
+    }
+
+    getStrength() {
+        if (!this.strength) return null;
+
+        let result = [];
+        if (Array.isArray(this.strength)) {
+            for (let target of this.strength) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Strength") && ex.targets.includes(target)));
+            }    
+        } else if (typeof this.strength === "string") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes(this.strength))//-------.map(ex => ex.name);
+
+        } else if (typeof this.strength === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Strength"))//-------.map(ex => ex.name);
+        } 
+        result=[...new Set(result)]; // dedupe
+        if (result.length > n_ofExercises) { result = randomSample(result, n_ofExercises);}
+
+        return result.length ? result : null;
+        
+    }
+    
+    getCardio() {
+        if (!this.cardio) return null;
+        let result = [];
+
+        if (typeof this.cardio === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Cardio"));
+        
+        } else if (Array.isArray(this.cardio)) {
+            for (let target of this.cardio) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Cardio") && ex.targets.includes(target)));
+            }
+            return result;
+        }
+        result=[...new Set(result)]; // dedupe
+        if (result.length > n_ofExercises) { result = randomSample(result, n_ofExercises);}
+
+        return result.length ? result : null;
+    }
+
+    getStretches() {
+        if (!this.stretches) return null;
+
+        let result = [];
+        if (typeof this.stretches === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "stretch");
+        } else if (Array.isArray(this.stretches)) {
+            for (let target of this.stretches) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "stretch" && ex.targets.includes(target)));
+            }
+        }
+
+        result=[...new Set(result)];   // dedupe
+        if (result.length > n_ofExercises) { result = randomSample(result, n_ofExercises);}
+
+        return result.length ? result : null;
+    }
+
+    getALL() {
+        let todos = [];
+        if (this.getJumps()) todos.push(...this.getJumps());
+        if (this.getPower()) todos.push(...this.getPower());
+        if (this.getStrength()) todos.push(...this.getStrength());
+        if (this.getCardio()) todos.push(...this.getCardio());
+        if (this.getStretches()) todos.push(...this.getStretches());
+
+        return todos;
+    }
+
+    toString() {
+        return `Day: ${this.day}`;
     }
 }
