@@ -174,25 +174,11 @@ button:active{transform:translateY(0);}
     font-family: 'Poppins';
 }
 
-#selectedList li.jumps {
-  background: var(--jmpSelect);
-}
-
-#selectedList li.power {
-  background: var(--powSelect);
-}
-
-#selectedList li.strength {
-  background: var(--stgSelect);
-}
-
-#selectedList li.cardio {
-  background: var(--carSelect);
-}
-
-#selectedList li.stretches {
-  background: var(--stcSelect);
-}
+#selectedList li.jumps {  background: var(--jmpSelect);}
+#selectedList li.power {  background: var(--powSelect);}
+#selectedList li.strength {  background: var(--stgSelect);}
+#selectedList li.cardio {  background: var(--carSelect);}
+#selectedList li.stretches {  background: var(--stcSelect);}
 
 button.funkyBtn{color:var(--text);
     padding:6px 12px;border:3px solid transparent;border-radius:999px;font-weight:700;font-size:13px;
@@ -201,7 +187,6 @@ button.funkyBtn{color:var(--text);
     linear-gradient(90deg, var(--j-current), var(--barpurple)) border-box;
     margin:0 10px 10px 0;
 }
-
 
 
 /* Main container */
@@ -233,16 +218,6 @@ button.funkyBtn{color:var(--text);
     justify-content:flex-end;
 }
 
-/* time input */
-.time-input{
-    width:60px;
-    padding:4px 6px;
-    border:1px solid rgba(55,65,81,0.2);
-    border-radius:6px;
-    font-size:13px;
-    margin-left:8px;
-}
-.time-input:focus{outline:none;box-shadow:0 0 0 2px rgba(37,99,235,0.3)}
 
 /* Titles */
 h1{
@@ -417,14 +392,57 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
 
 /* time input box styling */
 .time-input{
-            width:32px; height:32px; background-color: #c3ccde; border-radius: 10px;
-            font-size:20px; font-weight: 600;
-            font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
-        }
+    /*width:60px;*/
+    padding:4px 6px;
+    border:1px solid rgba(55,65,81,0.2);
+    border-radius:6px;
+    font-size:13px;
+    margin-left:8px;
+    /*width:32px;*/ height:32px; background-color: #c3ccde; border-radius: 10px;
+    font-size:20px; font-weight: 600;
+    font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
+    width: clamp(32px,64px,900px);
+}
+.time-input:focus{outline:none;box-shadow:0 0 0 2px rgba(37,99,235,0.3)}
 .time-input::-webkit-inner-spin-button{
     -webkit-appearance: none;
     margin: 0;
 }
+
+.time-editor{
+  position:absolute;
+  background:white;
+  border-radius:12px;
+  padding:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+  width:180px;
+}
+
+.editor-display{
+  font-size:22px;
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.quick-times{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-bottom:8px;
+}
+
+.adjust{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-bottom:10px;
+}
+
+button{
+  cursor:pointer;
+}
+#timeOK{background:#256d1c;/*outline: solid #104b08;*/}
+#timeCancel{background:#b00d0d;/*outline: solid #720c0c;*/}
 
 /*   LANDSCAPE MODE   */
 @media (orientation: landscape) {
@@ -452,6 +470,7 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
         .day-pill{display: none;}
         .title-stacked{gap:5px}
         .title-plus-icons #audioUnlockBtn{height:18%; width:18%;}
+        .drag-handle{display: none;}
         
     }
 }
