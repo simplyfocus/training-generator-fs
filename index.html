@@ -109,7 +109,7 @@
                 <div style="margin-top:8px;display:flex;gap:8px;">
                     <button id="startBtn">Start</button>
                     <button id="pauseBtn">Pause</button>
-                    <button id="resetBtn">Reset</button>
+                    <button id="resetBtn">Exit</button>
                 </div>
                 
             </div>
@@ -118,6 +118,31 @@
         <div class="side-col">
             <ul id="workoutList"></ul>
         </div>
+        </div>
+
+        <div id="timeEditor" class="time-editor hidden">
+
+            <div class="editor-display">00:30</div>
+
+            <div class="quick-times">
+                <button data-add="15">+15s</button>
+                <button data-add="30">+30s</button>
+                <button data-adjust="-60">-1m</button>
+                <button data-add="60">+1m</button>
+            </div>
+
+            <div class="adjust">
+                <button data-adjust="-10">−10</button>
+                <button data-adjust="-5">−5</button>
+                <button data-add="5">+5</button>
+                <button data-add="10">+10</button>
+            </div>
+
+            <div class="editor-actions">
+                <button id="timeOK">✓</button>
+                <button id="timeCancel">✕</button>
+            </div>
+
         </div>
 
     </section>
@@ -148,29 +173,7 @@ const warmups = [
     "Warm-up: heart rate"
 ];
 
-// Functions to: Extract exercise targets + Populate drop-downs
-function populateTargetSelect(selectId, mainTarget){
 
-    const targets = [...new Set(
-        ExLibrary
-            .filter(ex => ex.targets.includes(mainTarget))
-            .flatMap(ex => ex.targets)
-            .filter(t => !mainOptions.includes(t))
-    )].sort();
-
-    const select = document.getElementById(selectId);
-
-    targets.forEach(target => {
-
-        const option = document.createElement("option");
-
-        option.value = target;
-        option.textContent = target;
-
-        select.appendChild(option);
-
-    });
-}
 
 // Extract stretch targets (for drop-down selection)
 const stretchTargets = [...new Set(
@@ -201,18 +204,38 @@ document.getElementById("audioUnlockBtn").addEventListener("click", () => {
         alertSound.pause();
         alertSound.currentTime = 0;
         alertSound.muted = false;
-    }).catch(() => {});
+    }).catch(() => {});    
 });
 
+//Function: make training list from workoutSelection
+function makeTrainingList(plan){
+    if (typeof(plan)!="boolean"){
+        console.log("Error: plan must be boolean.",plan);
+        return -1
+    }
+    console.log("genHidden:",genHidden,"plan:",plan)
+    
+    if((raw_target_list.children.length > 0)||(plan||genHidden)){
 
-// Store target selection by type (Dictionary)
-function getWorkoutSelection(){
-    const selection = {};
-    selects.forEach(select => {
-        selection[select.id] = Array.from(select.selectedOptions)
-            .map(option => option.value);
-    });
-    return selection;
+        generatorPage.classList.toggle("hidden");
+        workoutPage.classList.toggle("hidden");
+        generateBtn.classList.toggle("middled")
+    
+        if(genHidden){genHidden=false;moveElement("generateWorkout","target-selection");moveElement("usePlanBtn","target-selection")
+            timer.pause();document.getElementById("timer").style="display: none"
+        } else {genHidden=true;
+            if (plan){ workoutSelection=loadPlan(todayWD); clearSelections()} else {workoutSelection = getWorkoutSelection();}
+            
+            const todayObj = new Day(workoutSelection);
+            const workoutItems = todayObj.getALL();
+            displayItems = workoutItems && workoutItems.length ? [...warmups, ...workoutItems] : [...warmups];
+            
+            moveElement("generateWorkout","titleStacked")
+
+            renderList();
+
+        }
+    }
 }
 
 // Handling 'random' option
@@ -238,148 +261,12 @@ selects.forEach(select => {
     select.addEventListener("change",updateList);
 });
 
-// Integrate from planner
+// Integrated from planner:
 
-// ===== Day Class =====
-class Day {
-    constructor(_wkSelection) {
-        this.jumps = null; this.power = null; this.strength = null; this.cardio = null; this.stretches = null;
-
-        Object.keys(_wkSelection).forEach(category => {
-            if(_wkSelection[category]){
-                if (_wkSelection[category].includes("random")){
-                    this[category] = getRandomTargets(category)
-                } else {
-                this[category] = _wkSelection[category]
-                }
-                // console.log("--",category)
-                // console.log(this[category])
-            }
-        })
-        // console.log(_wkSelection)
-    }
-
-    getJumps() {
-        return this.jumps || null;
-    }
-
-    getPower() {
-        if (!this.power) return null;
-
-        let result = [];
-        
-        if (typeof this.power === "boolean") {
-            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Power"));
-        } else if (Array.isArray(this.power)) {
-            for (let target of this.power) {
-                    result.push(...ExLibrary
-                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Power") && ex.targets.includes(target)));
-            }
-        }
-        result=[...new Set(result)]; // dedupe
-
-        if (result.length > n_ofExercises) {
-            result = randomSample(result, n_ofExercises);
-        }
-        return result.length ? result : null;
-    }
-
-    getStrength() {
-        // console.log("this . strength:",this.strength);
-        if (!this.strength) return null;
-
-        let result = [];
-        if (Array.isArray(this.strength)) {
-            for (let target of this.strength) {
-                    result.push(...ExLibrary
-                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Strength") && ex.targets.includes(target)));
-            }    
-        } else if (typeof this.strength === "string") {
-            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes(this.strength))//-------.map(ex => ex.name);
-
-        } else if (typeof this.strength === "boolean") {
-            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Strength"))//-------.map(ex => ex.name);
-        } 
-        result=[...new Set(result)]; // dedupe
-
-        if (result.length > n_ofExercises) {
-            result = randomSample(result, n_ofExercises);
-        }
-        
-        return result.length ? result : null;
-        
-    }
-    
-    getCardio() {
-        if (!this.cardio) return null;
-        let result = [];
-
-        if (typeof this.cardio === "boolean") {
-            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Cardio"));
-        
-        } else if (Array.isArray(this.cardio)) {
-            for (let target of this.cardio) {
-                    result.push(...ExLibrary
-                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Cardio") && ex.targets.includes(target)));
-            }
-            return result;
-        }
-        result=[...new Set(result)]; // dedupe
-
-        if (result.length > n_ofExercises) {
-                result = randomSample(result, n_ofExercises);
-            }
-        return result.length ? result : null;
-    }
-
-    getStretches() {
-        if (!this.stretches) return null;
-
-        let result = [];
-        if (typeof this.stretches === "boolean") {
-            result = ExLibrary.filter(ex => ex.type === "stretch");
-        } else if (Array.isArray(this.stretches)) {
-            for (let target of this.stretches) {
-                    result.push(...ExLibrary
-                        .filter(ex => ex.type === "stretch" && ex.targets.includes(target)));
-            }
-        }
-
-
-        // console.log("stretches from method:",result)
-
-        result=[...new Set(result)];   // dedupe
-
-        if (result.length > n_ofExercises) {
-            result = randomSample(result, n_ofExercises);
-        }
-        return result.length ? result : null;
-    }
-
-    getALL() {
-        let todos = [];
-        if (this.getJumps()) todos.push(...this.getJumps());
-        if (this.getPower()) todos.push(...this.getPower());
-        if (this.getStrength()) todos.push(...this.getStrength());
-        if (this.getCardio()) todos.push(...this.getCardio());
-        if (this.getStretches()) todos.push(...this.getStretches());
-
-
-        // console.log(this.jumps,this.power,this.strength,this.cardio,this.stretches)
-        // console.log("TODOS: ",todos)
-        return todos;
-    }
-
-    toString() {
-        return `Day: ${this.day}`;
-    }
-}
-
-// ===== Create Day Plan =====
+// ===== Generate Day Plan =====
 genHidden = false
 generateBtn.addEventListener("click", () => {makeTrainingList(false)} );
-// planBtn.addEventListener("click",makeTrainingList(true))
-
+// planBtn.addEventListener("click",makeTrainingList(true)) Not necessary; implemented in 'onClick()'
 
 
 // persistence for duration presets per exercise (minutes only)
@@ -389,8 +276,9 @@ function loadPresets(){
     catch(e){ return {}; }
 }
 function savePresets(obj){
-    try { localStorage.setItem(presetKey, JSON.stringify(obj)); }
+    try { localStorage.setItem(presetKey,JSON.stringify(obj)); }
     catch(e){ console.warn('could not save presets',e); }
+    console.log(obj)
 }
 const presets = loadPresets();
 
@@ -461,10 +349,18 @@ class Timer {
         }
     }
 
-    reset() {
+    reset(newTime) {
         this.pause();
+
+        if (newTime !== undefined){
+            this.duration = newTime;
+        }
         this.remaining = this.duration;
         this.update();
+        
+        if (currentCheck.getAttribute("aria-pressed") === "true"){
+            currentCheck.click();
+        }
     }
 
     setDuration(seconds) {
@@ -502,15 +398,137 @@ timer.onFinish = () => {
 
 startBtn.addEventListener('click', () => timer.start());
 pauseBtn.addEventListener('click', () => timer.pause());
-resetBtn.addEventListener('click', () => timer.reset());
 resetBtn.addEventListener('click', () => {
-    timer.reset();
-    if (currentLi) {
+    // TESTING wether it remains current
+    /*if (currentLi) {
         currentLi.classList.remove('current');
         currentLi = null;
     }
-    currentCheck = null;
+    currentCheck = null;*/
+    if (!currentLi) return;
+
+    const input = currentLi.querySelector(".time-input");
+
+    const newTime = parseInt(input.dataset.seconds);
+
+    timer.reset(newTime);   // pass updated time
 });
+
+//Helper function: time format and updating
+function updateDisplay(){
+  display.textContent = formatTime(currentTime);
+}
+
+//Helper function: safe positioning (no off-screen)
+function positionEditor(target){
+
+  const rect = target.getBoundingClientRect();
+
+  const editorWidth = editor.offsetWidth || 200;
+  const editorHeight = editor.offsetHeight || 200;
+
+  let left = rect.right + 8;
+  let top = rect.top;
+
+  // prevent right overflow
+  if(left + editorWidth > window.innerWidth){
+    left = rect.left - editorWidth - 8;
+  }
+
+  // prevent bottom overflow
+  if(top + editorHeight > window.innerHeight){
+    top = window.innerHeight - editorHeight - 8;
+  }
+
+  // prevent top overflow
+  if(top < 8){
+    top = 8;
+  }
+
+  editor.style.left = left + "px";
+  editor.style.top = top + "px";
+
+}
+
+//Keypad:open
+const editor = document.getElementById("timeEditor");
+const display = editor.querySelector(".editor-display");
+
+let activeInput = null;
+let currentTime = 0;
+
+document.addEventListener("click", e => {
+
+
+    if(e.target.classList.contains("time-input")){
+        activeInput = e.target;
+
+        currentTime = parseInt(activeInput.dataset.seconds || 60);
+
+        updateDisplay();
+
+        const rect = activeInput.getBoundingClientRect();
+
+        positionEditor(activeInput);
+
+        editor.classList.remove("hidden");
+    }
+});
+
+// Close editor if user clicks outside of it
+document.addEventListener("click", e => {
+
+  if(!editor.contains(e.target) && !e.target.classList.contains("time-input")){
+    editor.classList.add("hidden");
+  }
+
+});
+//Keypad:quick presets
+editor.querySelectorAll("[data-add]").forEach(btn => {
+
+  btn.addEventListener("click", ()=>{
+
+    currentTime += parseInt(btn.dataset.add);
+
+    updateDisplay();
+
+  });
+
+});
+//Keypad:fine adjustments
+editor.querySelectorAll("[data-adjust]").forEach(btn => {
+
+  btn.addEventListener("click", ()=>{
+
+    currentTime += parseInt(btn.dataset.adjust);
+
+    if(currentTime < 0) currentTime = 0;
+
+    updateDisplay();
+
+  });
+
+});
+//Keypad:confirm
+document.getElementById("timeOK").onclick = ()=>{
+    // 1️⃣ update input display & dataset
+    activeInput.dataset.seconds = currentTime;
+    activeInput.value = formatTime(currentTime);
+
+    // 2️⃣ save preset
+    //const exerciseName = activeInput.dataset.exercise; // or use label
+    const exerciseName = activeInput.id;
+    presets[exerciseName] = { value: currentTime };
+    savePresets(presets);
+
+    console.log(activeInput)
+
+    editor.classList.add("hidden");
+};
+//Keypad:cancel
+document.getElementById("timeCancel").onclick = ()=>{
+  editor.classList.add("hidden");
+};
 
 
 // helper to redraw list based on displayItems
@@ -588,26 +606,36 @@ function renderList(){
 
         // custom duration input (seconds)
         const timeInput = document.createElement('input');
-        timeInput.type = 'number';
+
+        timeInput.type = 'text';           // better for custom formatting
+        timeInput.readOnly = true;
         timeInput.className = 'time-input';
-        timeInput.min = '1';
-        timeInput.value = '1';
+
+        timeInput.id = label.textContent; //TESTING
+
+        timeInput.dataset.seconds = "60";  // store actual value
+        timeInput.value = "01:00";         // visible time
+
         timeInput.title = 'duration';
-        timeInput.addEventListener('click', e => e.stopPropagation());
-        timeInput.addEventListener('keydown', e => e.stopPropagation());
+
+        //timeInput.addEventListener('click', e => e.stopPropagation());
+        //timeInput.addEventListener('keydown', e => e.stopPropagation());
 
         // handle presets (minutes only)
         const applyPreset = () => {
             const p = presets[item];
             if(p){
-                timeInput.value = p.value;
+                timeInput.value = formatTime(p.value);
+                timeInput.dataset.seconds = p.value
             }
         };
+
+        /*Old preset saving
         const store = () => {
             presets[item] = { value: timeInput.value };
             savePresets(presets);
-        };
-        timeInput.addEventListener('change', () => { store(); });
+        };*/
+        /*timeInput.addEventListener('change', () => { store(); });*/
 
         left.appendChild(checkBtn);
         left.appendChild(label);
@@ -665,18 +693,20 @@ function renderList(){
             const isDone = li.classList.toggle('done');
             checkBtn.setAttribute('aria-pressed', isDone);
             if (isDone && currentCheck === checkBtn) {
-                currentCheck = null;
+                //TESTING currentCheck = null;
             }
             // if item marked done, remove current highlight
             if (isDone && li.classList.contains('current')) {
-                li.classList.remove('current');
-                if (currentLi === li) currentLi = null;
+                //TESTING li.classList.remove('current');
+                //TESTING if (currentLi === li) currentLi = null;
             }
         });
 
-        // click starts timer
-        li.addEventListener('click', () => {
-            let seconds = (parseInt(timeInput.value, 10) || 1) * 60;
+        // click starts timer  !!!Updated: only left starts timer
+        left.addEventListener('click', () => {
+            //previous: let seconds = (parseInt(timeInput.value, 10) || 1) * 60;
+            //new:
+            const seconds = parseInt(timeInput.dataset.seconds)
             // reveal timer when an exercise is selected
             if (timerContainer) timerContainer.style.display = 'flex';
             timer.setLabel(item);
@@ -688,6 +718,10 @@ function renderList(){
             li.classList.add('current');
             currentLi = li;
             currentCheck = checkBtn;
+
+            console.log(li,currentLi)
+            //TESTING: uncheck checked item if it is clicked
+            timer.reset();
             timer.start();
         });
 
