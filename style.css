@@ -499,6 +499,9 @@ button{
 /*   PORTRAIT MODE   */
 @media (orientation: portrait) {
 
+    .body{
+        padding: 20px 0;
+    }
     .container{
         grid-template-columns: 1fr;
         gap:20px;
