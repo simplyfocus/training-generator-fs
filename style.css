@@ -465,7 +465,7 @@ button{
 @media (orientation: landscape) {
     .main-col{
         position: sticky;
-        top: 8%;
+        top: 7%;
         /*transform: translateY(+50%);
         /*transform: translateY(-50%); /*-----------------------TRANSFORM-----------------------*/
         align-self: flex-start;
