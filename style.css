@@ -499,7 +499,7 @@ button{
 /*   PORTRAIT MODE   */
 @media (orientation: portrait) {
 
-    .body{
+    body{
         padding: 20px 0;
     }
     .container{
@@ -551,10 +551,10 @@ button{
     }*/
 
     
-    /* NEW */
+    /* NEW * test
     body{
         padding:10px;
-    }
+    }*/
 
     .title-main{
         font-size:34px;
