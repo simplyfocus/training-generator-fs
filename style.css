@@ -106,6 +106,7 @@ body{
     justify-content:center;
     padding:28px;
     -webkit-font-smoothing:antialiased;
+    font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif; padding: 20px;
 }
 /* Buttons */
 button{
@@ -499,14 +500,14 @@ button{
 /*   PORTRAIT MODE   */
 @media (orientation: portrait) {
 
-    body{
+    .body{
         padding: 20px 0;
     }
     .container{
         grid-template-columns: 1fr;
         gap:20px;
-        width:100%;
-        width:94vw;
+        /*width:100%;*/
+        /*width:94vw;*/
         padding:20px;
     }
 
@@ -551,10 +552,10 @@ button{
     }*/
 
     
-    /* NEW * test
+    /* NEW */
     body{
         padding:10px;
-    }*/
+    }
 
     .title-main{
         font-size:34px;
