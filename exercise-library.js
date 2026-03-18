@@ -225,8 +225,6 @@ function updateRandom(e){
 
     // save state for next change
     select._prevRandom = random.selected;
-
-    console.log("updated random", select)
 }
 
 // Generate 2 random targets
@@ -247,6 +245,27 @@ function getWorkoutSelection(){
             .map(option => option.value);
     });
     return selection;
+}
+
+//Function: get remaining seconds
+function sumUncheckedDurations(list){
+
+    let total = 0;
+
+    list.querySelectorAll("li").forEach(li => {
+
+        const givenTime = document.getElementById(li.tag).dataset.seconds
+        const isChecked = li.querySelector(".check-circle")
+            .getAttribute("aria-pressed") === "true";
+
+        if (!isChecked){
+            total += parseInt(givenTime || "0");
+        }
+
+    });
+
+    //console.log("total sec:",total)
+    return total;
 }
 
 // ===== Day Class =====
