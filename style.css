@@ -209,6 +209,7 @@ button.middled{margin:0}
     width:100%;
     /* max-width:90vw;*/
     box-sizing:border-box;
+    justify-self: center;
 }
 
 .main-col{
