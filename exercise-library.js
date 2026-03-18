@@ -1,666 +1,384 @@
-.hidden {display: none;}
-/* .middled{justify-self: middle;} */
-#dayName{display: none;}
+const ExLibrary = [
 
-:root{
-    --bg:#8aa5c3;
-    --bg-transparent:#708cacb7;
-    --card:#e9eef7;
-    --j-current:#2a4787;
-    --muted:#6b7280;
-    --accent:#7a95ce71;
-    --accent-2:rgb(159, 181, 197);     /*Hovered cards*/
-    --glass: rgba(255,255,255,0.7);
-    --gradbttm:#9daaca;
-
-    --text:#071232;
-    --colordark:#0f172a;
-    --timerboxtop:rgba(181, 202, 220, 0.9);
-    --timerboxbttm:rgba(152, 169, 193, 0.9);
-    --timertitle:#2c2e2f;
-    --barpurple:#8b5cf6;
-
-    --funkyLeft: #ffffff75 /*#9682cc31;*/;
-    --funkyRight: #ffffff60 /*#5573f631;*/;
-
-    --e-unc:#632b765f;
-    --s-unc:#2c93ad34;
-
-    --e-current: #911be1c8;
-    --s-current: #16a7cbd2;
-
-    --j-shadow: rgba(37,99,235,0.14);
-    --e-shadow: rgba(145, 26, 224, 0.14); /**/
-    --s-shadow: rgba(22, 167, 203, 0.14);
-
-    --e-hover: #995cad5f;
-    --s-hover: #66c4dc3a;
-
-    --jmpSelect: #7088cb;
-    --powSelect: #9f6dcd;
-    --stgSelect: #ba9567;
-    --carSelect: #73c26b;
-    --stcSelect: #67bca0;
-
-    --editor-bg: rgba(250, 250, 250, 0.937);
-}
-
-/* Dark mode overrides using media query */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg: #202547;
-        --bg-transparent: #1c1f41cb;
-        --card: #061427;
-        --j-current: #1856ba;
-        --muted: #465a7e;
-        --accent: rgba(59, 131, 246, 0.114);
-        --accent-2: rgba(112, 157, 230, 0.2);
-        --glass: rgba(116, 107, 159, 0.1);
-        --gradbttm:rgba(8, 35, 85, 0.9);
+        // Strength ========
+        {name: "Calf Raises", type:"exercise", targets:["Strength", "Calves"]},
+        {name: "Clamshell", type:"exercise", targets:["Strength", "Groin"]},
+        {name: "Glute Bridge", type:"exercise", targets:["Strength", "Glutes"]},
+        {name: "High Plank", type:"exercise", targets:["Strength", "Core"]},
+        {name: "Landing kicks", type:"exercise", targets:["Strength", "Glutes","Legs","Quads"]},
+        {name: "Landing Position Hold", type:"exercise", targets:["Strength", "Legs", "Glutes"]},
+        {name: "Lower Back Extensions", type:"exercise", targets:["Strength", "Back"]},
+        {name: "Low plank", type:"exercise", targets:["Strength", "Core"]},
+        {name: "Lunge", type:"exercise", targets:["Strength", "Legs", "Glutes"]},
+        {name: "Lying Leg Raises", type:"exercise", targets:["Strength", "Core"]},
+        {name: "Push-up", type:"exercise", targets:["Strength", "Chest", "Arms"]},
+        {name: "Russian Twists", type:"exercise", targets:["Strength", "Core", "Power"]},
+        {name: "Squat", type:"exercise", targets:["Strength", "Legs", "Quads"]},
+        {name: "Superman", type:"exercise", targets:["Strength", "Back"]},
+        {name: "V-ups", type:"exercise", targets:["Strength", "Core"]},
+        {name: "Wall Sit", type:"exercise", targets:["Strength", "Legs", "Glutes"]},
         
-        --text: #e1e6ec;
 
-        --timerboxtop:rgba(176, 202, 237, 0.9);
-        --timerboxbttm:rgba(57, 82, 104, 0.9);
-        --timertitle:#1a0e72;
-        --barpurple:#7e3cf0;
-
-        --funkyLeft: var(--timertitle);
-        --funkyRight: var(--card);
-
-    }
-}
-
-/* Page layout */
-html,body{height:100%;
-    
-    width: 100%;
-    max-width: 100%;
-    overflow-x: clip;
-}
-
-/*Chat GPT*/
-html{
-    scroll-behavior:smooth;
-    background-attachment:fixed;
-    min-height:100%;
-    overflow-x: hidden;
-}
-
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background: linear-gradient(180deg,var(--bg),var(--gradbttm));
-    
-    z-index:-1;
-}
-body{
-    margin:0;
-    font-family: 'Poppins', sans-serif;
-    /* use fixed attachment so gradient fills viewport reliably in Edge */
-    background: transparent;
-    /* background-attachment:fixed; */
-    min-height:100vh;
-    
-    justify-content:center;
-    padding:28px;
-    -webkit-font-smoothing:antialiased;
-    font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif; padding: 20px;
-}
-/* Buttons */
-button{
-    background:var(--j-current);
-    color:white;
-    border:0;
-    padding:8px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
-}
-
-button:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,0.12);}
-button:active{transform:translateY(0);}
-
-
-#target-selection{padding-bottom:15px;}
-#categorySelect fieldset {
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    max-width: 600px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
-#categorySelect legend {
-    color:var(--text);
-    font-weight: 200;
-    padding: 0 10px;
-}
-#categorySelect label {
-    color:var(--text);
-    line-height:25px;
-    display: block;
-    margin-bottom: 0px;
-}
-#categorySelect select {
-    width: 100%;
-    min-height: 100px;
-    padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-}
-#categorySelect select:focus {
-    border-color: #4a90e2;
-    outline: none;
-    box-shadow: 0 0 4px rgba(74,144,226,0.4);
-}
-
-#selectedList {
-    display:flex;
-    flex-wrap: wrap;
-    list-style: none;
-    gap:clamp(5px);
-}
-
-#selectedList li {
-    display: inline-block;
-    background: var(--timerboxtop);
-    border-radius: 20px;
-    padding:14px 16px;
-    font-size:clamp(14px,2vw,17px);
-    padding:8px 10px;
-    font-family: 'Poppins';
-}
-
-#selectedList li.jumps {  background: var(--jmpSelect);}
-#selectedList li.power {  background: var(--powSelect);}
-#selectedList li.strength {  background: var(--stgSelect);}
-#selectedList li.cardio {  background: var(--carSelect);}
-#selectedList li.stretches {  background: var(--stcSelect);}
-
-button.funkyBtn{color:var(--text);
-    padding:6px 12px;border:3px solid transparent;border-radius:999px;font-weight:700;font-size:13px;
-    background:
-    linear-gradient(45deg, var(--funkyLeft), var(--funkyRight)) padding-box,
-    linear-gradient(90deg, var(--j-current), var(--barpurple)) border-box;
-    margin:0 10px 10px 0;
-}
-button.middled{margin:0}
-
-
-/* Main container */
-.container{
-    width:min(900px,98%);
-    background:var(--card);
-    border-radius:14px;
-    padding:17px;
-    box-shadow:0 12px 30px rgba(16,24,40,0.08);
-    border:1px solid rgba(37,99,235,0.04);
-
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:32px;
-
-
-    width:100%;
-    /* max-width:90vw;*/
-    box-sizing:border-box;
-    justify-self:center;
-}
-
-.main-col{
-    align-self:center;
-    justify-items: center;
-}
-
-.side-col{
-    display:flex;
-    justify-content:flex-end;
-}
-
-
-/* Titles */
-h1{
-    margin:0 0 6px 0;
-    font-size:20px;
-    text-align:center;
-    color:var(--text);
-    font-family: 'Poppins', sans-serif;
-}
-h2{
-    margin:15px 0 10px 30px;
-    font-size:14px;
-    text-align:left;
-    color:var(--timerboxtop);
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Timer card (overrides inline styles gently) */
-#timer{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-    padding:12px 7px;
-    border-radius:22px;
-    background:linear-gradient(180deg,var(--timerboxtop),var(--timerboxbttm));
-    border:3px solid var(--bg-transparent);
-    /* max-width:360px; */
-    margin:14px auto 0px auto;
-
-    /* CHAT GPT */
-    position:sticky;
-    top:12px;
-    z-index:100;
-
-    box-shadow:0 12px 30px rgba(0,0,0,0.35);
-    backdrop-filter: blur(6px);
-}
-
-#timer #timerLabel{
-    text-align:center; font-weight:600;color:var(--timertitle);font-size:20px;
-    font-family:'Poppins', sans-serif;line-height: clamp(23px,4.4vh,33px);}
-
-#timeDisplay{
-    font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
-    font-weight:900;
-    background:#f1f5f9;
-    padding:5px 18px;
-    border-radius:8px;
-    font-size:47px;
-    color:#0b1220;
-    min-width:86px;
-    text-align:center;
-}
-
-/* timer progress bar */
-.progress-track{width:100%;height:8px;background:rgba(11,18,32,0.06);border-radius:999px;overflow:hidden;margin-bottom:6px}
-.progress-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--j-current),var(--barpurple));transition:width .35s linear}
-
-button#pauseBtn{background:#757f8e}
-button#resetBtn{background:#ef4444}
-
-#endTime{
-    font-family:'Trebuchet MS', sans-serif;
-    color:var(--colordark);
-    margin:3px 0 0;
-}
-
-/* Workout list */
-ul{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:10px;width:100%;}
-
-/* make each item full width and split into left/right areas */
-#workoutList li{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:12px;padding:12px 14px;background:var(--accent);
-    border-radius:10px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
-    cursor:pointer;color:var(--text);font-weight:600;width:100%;box-sizing:border-box;
-}
-#workoutList li.stretch{background:var(--s-unc)}
-#workoutList li.exercise{background:var(--e-unc)}
-
-.side-col{flex:1 1 280px;display:flex;justify-content:flex-end}
-
-.item-left{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0}
-.item-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-
-#workoutList li:hover{background:var(--accent-2);transform:translateY(-4px);box-shadow:0 12px 24px rgba(2,6,23,0.06);}
-#workoutList li.exercise:hover{background:var(--e-hover)}
-#workoutList li.stretch:hover{background:var(--s-hover)}
-li .meta{font-size:12px;color:var(--muted);font-weight:500}
-
-/* Focus for keyboard accessibility */
-#workoutList li:focus{outline:3px solid rgba(37,99,235,0.18);outline-offset:2px}
-
-/* Responsive */
-@media (max-width:680px){
-    .container{flex-direction:column}
-}
-
-@media (max-width:420px){
-    .container{padding:18px}
-    button{padding:8px 10px;font-size:13px}
-    .exercise-label{font-size:14px}
-    #workoutList li.time-input{width:10px;padding:0px 0px;font-size:12px}
-}
-
-/* small utility */
-.muted{color:var(--muted);font-size:13px}
-.title-accent{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
-.title-main{font-size:30px;margin:0;color:var(--text);letter-spacing:0.2px}
-.title-sub{font-size:13px;margin:6px 0 0;color:var(--muted);font-weight:500}
-
-/* Stacked title with pill-style day label */
-.title-stacked{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:14px}
-.title-stacked .title-main{font-size:30px;margin:0}
-
-
-/* icon + title layout */
-.title-with-icon{display:flex;align-items:center;gap:12px;}
-.app-icon{width:36px;height:36px;flex:0 0 auto;color:var(--j-current);fill:currentColor}
-
-/* header ICO placed above title */
-.header-ico{width:56px;height:56px;object-fit:cover;border-radius:6px;box-shadow:0 6px 18px rgba(2,6,23,0.12);border:1px solid rgba(7,18,50,0.06);display:block;margin:0 0 13px}
-
-/*.title-plus-icons{justify-items: center;}*/
-.title-plus-icons{display:flex;flex-direction:column;align-items:center; justify-content:center}
-
-
-/* Check circle for marking exercises done */
-.check-circle{
-    width:26px;height:26px;border-radius:50%;border:2px solid rgba(7,18,50,0.08);
-    background:transparent;display:inline-flex;align-items:center;justify-content:center;
-    margin-right:12px;flex:0 0 auto;cursor:pointer;transition:background .12s ease,border-color .12s ease,transform .08s;
-}
-.check-circle:hover{transform:translateY(-2px);border-color:var(--j-current)}
-.check-circle[aria-pressed="true"]{background:#22c55e;/* emerald-500 */border-color:#22c55e;color:white}
-.check-circle::after{content:'';font-size:14px;color:white;display:block;opacity:0;transition:opacity .12s;}
-.check-circle[aria-pressed="true"]::after{content:'✓';opacity:1}
-
-#workoutList li.done{opacity:0.5;color:var(--muted)}
-#workoutList li.done .exercise-label{text-decoration:line-through}
-
-#workoutList li.dragging{opacity:0.4;}
-
-/* Exercise labels in list */
-.exercise-label{font-weight:600;font-family:'Poppins', 'Roboto', sans-serif}
-
-/* current (active) item while timer is running */
-#workoutList li.current{background:var(--j-current);color:#fff;box-shadow:0 12px 30px var(--j-shadow)}
-#workoutList li.current.exercise{background:var(--e-current);box-shadow:0 12px 30px var(--e-shadow)}
-#workoutList li.current.stretch{background:var(--s-current);box-shadow:0 12px 30px var(--s-shadow)}
-#workoutList li.current .exercise-label{color:#fff}
-#workoutList li.current .check-circle{border-color:rgba(255,255,255,0.35);color:#fff}
-#workoutList li.current .time-input{background:rgba(255,255,255,0.06);color:#fff;border-color:rgba(255,255,255,0.12)}
-#workoutList li.current .drag-handle{color:rgba(255,255,255,0.8)}
-
-/* drag handle */
-.drag-handle{
-    cursor:grab;
-    font-size:18px;
-    color:var(--muted);
-    margin-right:8px;
-}
-.drag-handle:active{cursor:grabbing;}
-
-/* small arrow buttons */
-.small-arrow{
-    padding:1px 3px;
-    font-size:9px;
-    line-height:1;
-    background:rgba(0,0,0,0.05);
-    border-radius:6px;
-}
-.small-arrow:hover{background:rgba(0,0,0,0.1);} 
-
-/* ensure checkbox + label align left inside item */
-.item-left{justify-content:flex-start}
-
-/* time input box styling */
-.time-input{
-    /*width:60px;*/
-    padding:4px 6px;
-    border:1px solid rgba(55,65,81,0.2);
-    border-radius:6px;
-    font-size:13px;
-    margin-left:8px;
-    /*width:32px;*/ height:32px; background-color: #c3ccde; border-radius: 10px;
-    font-size:20px; font-weight: 600;
-    font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
-    width: clamp(32px,64px,900px);
-}
-.time-input:focus{outline:none;box-shadow:0 0 0 2px rgba(37,99,235,0.3)}
-.time-input::-webkit-inner-spin-button{
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.time-editor{
-  position:absolute;
-  background: var(--editor-bg);
-  border: solid #3f426d;
-  border-width: 3px;
-  border-radius:12px;
-  padding:12px;
-  box-shadow:0 12px 30px rgba(1, 1, 34, 0.515);
-  width:180px;
-}
-.keys{
-    padding-left: 2px;
-    padding-right: 2px;
-}
-.keys.sub{
-    background-color: #2c3156d1;
-}
-.editor-display{
-  font-size:22px;
-  text-align:center;
-  margin-bottom:10px;
-}
-
-.quick-times{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
-  margin-bottom:8px;
-}
-
-.adjust{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:6px;
-  margin-bottom:10px;
-}
-
-button{
-  cursor:pointer;
-}
-#timeOK{background:#308b24;/*outline: solid #104b08;*/}
-#timeCancel{background:#b00d0d;/*outline: solid #720c0c;*/}
-
-/*   LANDSCAPE MODE   */
-@media (orientation: landscape) {
-    .main-col{
-        position: sticky;
-        top: 7%;
-        /*transform: translateY(+50%);
-        /*transform: translateY(-50%); /*-----------------------TRANSFORM-----------------------*/
-        align-self: flex-start;
-    }
-    .side-col{
-        align-self:flex-start;
-    }
-    #timer{padding:12px 14px;}
-    #workoutList li{
-        padding:10px 14px;
-    }
-
-    @media (max-width:900px) {
-        /* *{outline: solid red;}*/
-        .app-icon{display: none;}
-        .title-stacked .title-plus-icons{ display: flex; flex-direction: row; align-items:center; padding-bottom:0px;}
-        .title-with-icon .title-main{margin:0; line-height: 1; padding-left: 5px; padding-bottom:0px; font-size: 2.6vw;}
-        .title-plus-icons #audioUnlockBtn{align-self:center; margin:0 0 0px;margin-right: 0.7vw;}
-        .day-pill{display: none;}
-        .title-stacked{gap:5px}
-        .title-plus-icons #audioUnlockBtn{height:13%; width:13%;}
-        .drag-handle{display: none;}
+        // Balance ========
+        {name: "Arabesque Hold", type:"exercise", targets:["Strength", "Balance","Glutes", "Hamstrings"]},
+        {name: "Bosu Ball Balance", type:"exercise", targets:["Balance"]},
+        {name: "Camel hold", type:"exercise", targets:["Hamstrings"]},
+        {name: "Closed-eye landing", type:"exercise",targets:["Balance"]},
+        {name: "Heel-to-Toe Walk", type:"exercise", targets:["Balance"]},
+        {name: "Pistol Squat", type:"exercise", targets:["Strength", "Balance","Legs", "Glutes"]},
+        {name: "Single-leg Stand", type:"exercise", targets:["Balance"]},
+        {name: "Stability Ball Exercises", type:"exercise", targets:["Balance"]},
+        {name: "Yoga Tree Pose", type:"exercise", targets:["Balance"]},
         
-        #timer{ gap:8px;}
-        /*#timer #timerLabel{font-size:18px}*/
-        #timeDisplay{padding: 5px 18px; font-size: 37px;}
         
+        // Power ========
+        {name: "Backward swizzle jump + tap or 1/2turn", type:"exercise", targets:["Power"]},
+        {name: "Box Jump", type:"exercise", targets:["Legs", "Quads","Power"]},
+        {name: "Broad Jump", type:"exercise", targets:["Legs", "Power"]},
+        {name: "Correr zancadas + waltz swing + h", type:"exercise", targets:["Hip flexors","Power"]},
+        {name: "Fwd skater jumps", type:"exercise", targets:["Calves","Power"]},
+        {name: "Lateral Bounds", type:"exercise", targets:["Legs", "Power"]},
+        {name: "Skater Hops", type:"exercise", targets:["Legs", "Power"]},
+        {name: "Tap Jump", type:"exercise", targets:["Legs", "Calves"]},
+        {name: "Tuck Jumps", type:"exercise", targets:["Legs", "Core","Power"]},
+        {name: "3➡️jumps + stick (2legs) + 🔁", type:"exercise", targets:["Power"]},
+        {name: "➡️jump + ⬆️jump + stick (1leg)", type:"exercise", targets:["Power"]},
+        {name: "3➡️jumps + 3⬅️jump + stick (1leg)", type:"exercise", targets:["Power"]},
+        {name: "3➡️jumps + 3⬅️jump + landing (2legs)", type:"exercise", targets:["Power"]},
+
+        // Cardio ========
+        {name: "Burpees", type:"exercise", targets:["Cardio"]},
+        {name: "High Knees", type:"exercise", targets:["Cardio","Core"]},
+        {name: "Jumping Jacks", type:"exercise", targets:["Cardio"]},
+        {name: "Mountain Climbers", type:"exercise", targets:["Cardio","Core","Power"]},
+
+        // Stretches ========
+        {name: "90/90 stretch", type:"stretch", targets:["Hips"]},
+        {name: "Ankle under couch", type:"stretch", targets:["Ankles"]},
+        {name: "Ankle rolls", type:"stretch", targets:["Ankles"]},
+        {name: "Arabesque", type:"stretch", targets:["Extensions"]},
+        {name: "Attitude", type:"stretch", targets:["Extensions"]},
+        {name: "Backbend", type:"stretch", targets:["Back"]},
+        {name: "Bridge", type:"stretch", targets:["Back"]},
+        {name: "Butterfly stretch", type:"stretch", targets:["Hips"]},
+        {name: "Cat-cow", type:"stretch", targets:["Back"]},
+        {name: "Child's pose", type:"stretch", targets:["Back"]},
+        {name: "Clamshell", type:"stretch", targets:["Turnout"]},
+        {name: "Cobra", type:"stretch", targets:["Back"]},
+        {name: "Couch stretch", type:"stretch", targets:["Quads"]},
+        {name: "Cross-body shoulder stretch", type:"stretch", targets:["Shoulders"]},
+        {name: "Developpe", type:"stretch", targets:["Extensions"]},
+        {name: "Dorsiflexion stretch", type:"stretch", targets:["Ankles"]},
+        {name: "Extended lunge", type:"stretch", targets:["Hamstrings"]},
+        {name: "Frog pose", type:"stretch", targets:["Hips"]},
+        {name: "Front splits", type:"stretch", targets:["Front split"]},
+        {name: "High kick", type:"stretch", targets:["Hamstrings"]},
+        {name: "Lunge (stretch)", type:"stretch", targets:["Front split","Hips"]},
+        {name: "Lying spine twist", type:"stretch", targets:["Back"]},
+        {name: "Lying quad stretch", type:"stretch", targets:["Quads"]},
+        {name: "Pancake", type:"stretch", targets:["Middle split","Hips"]},
+        {name: "Passe", type:"stretch", targets:["Extensions"]},
+        {name: "Plantarflexion stretch", type:"stretch", targets:["Ankles"]},
+        {name: "Pull arm behind head", type:"stretch", targets:["Shoulders"]},
+        {name: "Seated turnout stretch", type:"stretch", targets:["Turnout"]},
+        {name: "Sciatic glides", type:"stretch", targets:["Hamstrings"]},
+        {name: "Standing hamstring stretch", type:"stretch", targets:["Hamstrings"]},
+        {name: "Standing pancake", type:"stretch", targets:["Middle split","Hips"]},
+        {name: "Standing turnout stretch", type:"stretch", targets:["Turnout"]},
+        {name: "Straddle", type:"stretch", targets:["Middle split"]},
+        {name: "Wall shoulder stretch", type:"stretch", targets:["Shoulders"]},
+];
+
+
+// Load planned program
+function loadPlan(day){
+    jumps=null;power=null;strength=null;cardio=null;stretches=null;
+    if (day === 0) {
+        jumps = ["Axel","Toe-loop","Salchow"];
+        cardio = "random";
+    } else if (day === 1) {
+        jumps = ["Salchow","Toe-loop"];
+        strength = ["Balance","Arms","Shoulders","Core","Back"];
+    } else if (day === 2) {
+        strength = ["Balance","Core","Glutes","Hamstrings","Hip flexors","Quads","Calves"];
+        stretches = ["Front split","Extensions"];
+    } else if (day === 3) {
+        stretches = ["Shoulders","Ankles","Middle split","Back"];
+    } else if (day === 4) {
+        jumps = ["Loop", "Flip", "Lutz"];
+    } else if (day === 5) {
+        jumps = ["Axel","Loop","Rotations","Flip","Lutz"];
+        power = "random";
+        stretches = ["Hips","Turnout"];
+    } else {
+        power = "random";
+        cardio = "random";
     }
+    return {"jumps":jumps, "power":power, "strength":strength, "cardio":cardio, "stretches":stretches}
 }
 
-/*   PORTRAIT MODE   */
-@media (orientation: portrait) {
+// Move an element
+function moveElement(_id,_to){
+    const element=document.getElementById(_id)
+    const to=document.getElementById(_to)
 
-    .body{
-        padding: 20px 0;
-    }
-    .container{
-        grid-template-columns: 1fr;
-        gap:20px;
-        /*width:100%;*/
-        /*width:94vw;*/
-        padding:20px;
-    }
+    to.appendChild(element)
+}
 
-    .main-col{
-        order:1;
-    }
+// Helper function: Random Sample
+function randomSample(arr, n) {
+    return [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
+}
 
-    .side-col{
-        order:2;
-        justify-content:stretch;
+//Function: format time
+function formatTime(seconds){
 
-        /* CHAT GPT */
-        max-height:60vh;
-        overflow-y:auto;
-        -webkit-overflow-scrolling:touch;
-        max-height:70vh;
-        overflow-y:auto;
-        padding-top: 10px;
-    }
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
 
-    ul{
-        width:100%;
-        gap:14px;
-    }
-    #selectedList{
-        gap:clamp(10vh)/*10px*/
-    }
+  return (
+    String(m).padStart(2,"0") +
+    ":" +
+    String(s).padStart(2,"0")
+  );
+}
 
-    li{
-        padding:14px 16px;
-        font-size:15px;
-        padding:8px 10px;
-        border-radius:16px;
-        font-size:18px;
-    }
-    .exercise-label{font-size:16px}
+// Function: Extract exercise targets + Populate drop-downs
+function populateTargetSelect(selectId, mainTarget){
 
-    /* .time-input{
-        width:70px;
-        height:36px;
-        font-size:18px;
-    }*/
+    const targets = [...new Set(
+        ExLibrary
+            .filter(ex => ex.targets.includes(mainTarget))
+            .flatMap(ex => ex.targets)
+            .filter(t => !mainOptions.includes(t))
+    )].sort();
 
+    const select = document.getElementById(selectId);
+
+    targets.forEach(target => {
+
+        const option = document.createElement("option");
+
+        option.value = target;
+        option.textContent = target;
+
+        select.appendChild(option);
+
+    });
+}
+
+// Helper function to update target list
+function updateList() {
+
+    raw_target_list.innerHTML = "";
+    selects.forEach(select => {
+
+        const selectedOptions = Array.from(select.selectedOptions);
+        const category = select.id;   // jumps, strength, cardio, etc.
+
+        selectedOptions.forEach(option => {
+
+            const li = document.createElement("li");
+            li.textContent = option.text;
+            li.classList.add(category);  // add "category" class
+
+            raw_target_list.appendChild(li);
+        });
+    });
     
-    /* NEW */
-    body{
-        padding:10px;
+};
+
+// Clear selections
+function clearSelections(){
+    document.querySelectorAll("select").forEach(s => {
+        s.selectedIndex = -1;
+    });
+    updateList();
+}
+
+// Update Random
+function updateRandom(e){
+
+    const select = e.target;
+    const options = Array.from(select.options);
+
+    const random = options.find(o => o.value === "random");
+    if (!random) return;
+
+    const others = options.filter(o => o !== random);
+
+    // previous state stored on the select element
+    const prevRandom = select._prevRandom || false;
+
+    const randomNow = random.selected;
+    const otherSelected = others.some(o => o.selected);
+
+    // Case 1: user just clicked random
+    if (!prevRandom && randomNow) {
+        others.forEach(o => o.selected = false);
     }
 
-    .title-main{
-        font-size:34px;
+    // Case 2: user clicked another option while random was selected
+    if (prevRandom && otherSelected) {
+        random.selected = false;
     }
 
-    .day-pill{
-        font-size:16px;
-        padding:8px 16px;
-    }
+    // save state for next change
+    select._prevRandom = random.selected;
+}
 
-    .header-ico{
-        width:70px;
-        height:70px;
-    }
+// Generate 2 random targets
+function getRandomTargets(elementId){
+    if (Array.from(document.getElementById(elementId).options).map(op => op.value).includes("random")){
+    return randomSample(
+        Array.from(document.getElementById(elementId).options)
+        .map(op => op.value)
+        .filter(v => !mainOptions.includes(v)),
+    2)} else {return null}
+};
 
-    .drag-handle{
-        font-size:24px;
-        padding:6px;
-    }
+// Store target selection by type (Dictionary)
+function getWorkoutSelection(){
+    const selection = {};
+    selects.forEach(select => {
+        selection[select.id] = Array.from(select.selectedOptions)
+            .map(option => option.value);
+    });
+    return selection;
+}
 
-    #timeDisplay{
-        font-size:8.5vw;
-        background-color: #f6f6f6;
-    } /* NOT working */
+//Function: get remaining seconds
+function sumUncheckedDurations(list){
 
-    #timer{
-        width: 100%;
-    }
-    /* END NEW */
-    
+    let total = 0;
 
-    /* VS suggestion */
-    /* hide scrollbar but still allow scrolling on mobile */
-    .side-col::-webkit-scrollbar{
-        display:none;
-    }
+    list.querySelectorAll("li").forEach(li => {
 
-    /*   ADDITIONS FOR SIZE   
-    .title-main{
-        font-size: clamp(28px,6vw,36px);
-    }
-    
-    body{
-        font-size: 20vw;
-    }
-    
-    h1{
-        font-size: 20vw;
-    }
-    
-    li{
-        font-size: 1.05rem;
-        padding: 14px 18px;
-        width: 100%;
-        border-radius: 16px;
-    }
-    .container{
-        width:100%;
-        max-width:none;
-        padding:16px 12px;
-    }*/
-    
-    @media (max-width: 400px) {
-        
-        .body{padding:8px;}
-        .container{padding:17px;}
-        #workoutList li{
-            font-size:150%;
-            padding: 10px 5px; border-radius: 16px;
-        }
-        
-        /* .time-input{
-            width:32px; height:32px; background-color: #c3ccde; border-radius: 10px;
-            font-size:20px; font-weight: 600;
-            font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
-        }*/
-        
-        .drag-handle{display: none;}
-        .check-circle{margin-right:0px;}
-        
-        button.middled{margin-bottom:0}
-        #timer{margin-left: 0;margin-right: 0; gap:8px}
-        #timer #timerLabel.timer-label{
-            font-size:21px /*!important*/;
-            /* line-height: 3vh; */
-            margin:0px
+        const givenTime = document.getElementById(li.tag).dataset.seconds
+        const isChecked = li.querySelector(".check-circle")
+            .getAttribute("aria-pressed") === "true";
+
+        if (!isChecked){
+            total += parseInt(givenTime || "0");
         }
 
-        /*hide svg*/
-        .app-icon{display: none;}
-        .title-stacked .title-plus-icons{ display: flex; flex-direction: row; align-items:center; justify-content:center; padding-bottom:0px;}
-        .title-with-icon .title-main{margin:0; line-height: 1; padding-left: 5px; padding-bottom:0px; font-size: 6vw;}
-        .title-plus-icons #audioUnlockBtn{height:16%; width:16%; align-self:center; margin:0 0 0px;margin-right: 0.7vw;}
-        .day-pill{display:none}
+    });
 
-
-    }
+    //console.log("total sec:",total)
+    return total;
 }
 
+// ===== Day Class =====
+class Day {
+    constructor(_wkSelection) {
+        this.jumps = null; this.power = null; this.strength = null; this.cardio = null; this.stretches = null;
 
-/* #timer #timerLabel.timer-label{line-height: clamp(20px,6.2vh,35px);}*/
+        Object.keys(_wkSelection).forEach(category => {
+            if(_wkSelection[category]){
+                if (_wkSelection[category].includes("random")){
+                    this[category] = getRandomTargets(category)
 
+                } else { this[category] = _wkSelection[category]}
+            }
+        })
+    }
 
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
+    getJumps() {
+        return this.jumps || null;
+    }
+
+    getPower() {
+        if (!this.power) return null;
+
+        let result = [];
+        
+        if (typeof this.power === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Power"));
+        } else if (Array.isArray(this.power)) {
+            for (let target of this.power) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Power") && ex.targets.includes(target)));
+            }
+        }
+        result=[...new Set(result)]; // dedupe
+        if (result.length > n_ofExercises) { result = randomSample(result, n_ofExercises);}
+
+        return result.length ? result : null;
+    }
+
+    getStrength() {
+        if (!this.strength) return null;
+
+        let result = [];
+        if (Array.isArray(this.strength)) {
+            for (let target of this.strength) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Strength") && ex.targets.includes(target)));
+            }    
+        } else if (typeof this.strength === "string") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes(this.strength))//-------.map(ex => ex.name);
+
+        } else if (typeof this.strength === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Strength"))//-------.map(ex => ex.name);
+        } 
+        result=[...new Set(result)]; // dedupe
+        if (result.length > n_ofExercises) { result = randomSample(result, n_ofExercises);}
+
+        return result.length ? result : null;
+        
+    }
+    
+    getCardio() {
+        if (!this.cardio) return null;
+        let result = [];
+
+        if (typeof this.cardio === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Cardio"));
+        
+        } else if (Array.isArray(this.cardio)) {
+            for (let target of this.cardio) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Cardio") && ex.targets.includes(target)));
+            }
+            return result;
+        }
+        result=[...new Set(result)]; // dedupe
+        if (result.length > n_ofExercises) { result = randomSample(result, n_ofExercises);}
+
+        return result.length ? result : null;
+    }
+
+    getStretches() {
+        if (!this.stretches) return null;
+
+        let result = [];
+        if (typeof this.stretches === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "stretch");
+        } else if (Array.isArray(this.stretches)) {
+            for (let target of this.stretches) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "stretch" && ex.targets.includes(target)));
+            }
+        }
+
+        result=[...new Set(result)];   // dedupe
+        if (result.length > n_ofExercises) { result = randomSample(result, n_ofExercises);}
+
+        return result.length ? result : null;
+    }
+
+    getALL() {
+        let todos = [];
+        if (this.getJumps()) todos.push(...this.getJumps());
+        if (this.getPower()) todos.push(...this.getPower());
+        if (this.getStrength()) todos.push(...this.getStrength());
+        if (this.getCardio()) todos.push(...this.getCardio());
+        if (this.getStretches()) todos.push(...this.getStretches());
+
+        return todos;
+    }
+
+    toString() {
+        return `Day: ${this.day}`;
+    }
 }
