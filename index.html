@@ -111,6 +111,8 @@
                     <button id="pauseBtn">Pause</button>
                     <button id="resetBtn">Exit</button>
                 </div>
+
+                <p id="endTime">Ends at: --:--</p>
                 
             </div>
         </div>
@@ -125,17 +127,17 @@
             <div class="editor-display">00:30</div>
 
             <div class="quick-times">
-                <button data-add="15">+15s</button>
-                <button data-add="30">+30s</button>
-                <button data-adjust="-60">-1m</button>
-                <button data-add="60">+1m</button>
+                <button class="keys add" data-add="15">+15s</button>
+                <button class="keys add" data-add="30">+30s</button>
+                <button class="keys sub" data-adjust="-60">-1m</button>
+                <button class="keys add" data-add="60">+1m</button>
             </div>
 
             <div class="adjust">
-                <button data-adjust="-10">−10</button>
-                <button data-adjust="-5">−5</button>
-                <button data-add="5">+5</button>
-                <button data-add="10">+10</button>
+                <button class="keys sub" data-adjust="-10">−10</button>
+                <button class="keys sub" data-adjust="-5">−5</button>
+                <button class="keys add" data-add="5">+5</button>
+                <button class="keys add" data-add="10">+10</button>
             </div>
 
             <div class="editor-actions">
@@ -213,7 +215,6 @@ function makeTrainingList(plan){
         console.log("Error: plan must be boolean.",plan);
         return -1
     }
-    console.log("genHidden:",genHidden,"plan:",plan)
     
     if((raw_target_list.children.length > 0)||(plan||genHidden)){
 
@@ -278,7 +279,6 @@ function loadPresets(){
 function savePresets(obj){
     try { localStorage.setItem(presetKey,JSON.stringify(obj)); }
     catch(e){ console.warn('could not save presets',e); }
-    console.log(obj)
 }
 const presets = loadPresets();
 
@@ -308,6 +308,7 @@ class Timer {
             const pct = this.duration > 0 ? ((this.duration - this.remaining) / this.duration) * 100 : 0;
             this.progressFill.style.width = Math.max(0, Math.min(100, pct)) + '%';
         }
+        updateEndTimeDisplay();
     }
 
     start() {
@@ -521,9 +522,9 @@ document.getElementById("timeOK").onclick = ()=>{
     presets[exerciseName] = { value: currentTime };
     savePresets(presets);
 
-    console.log(activeInput)
-
     editor.classList.add("hidden");
+
+    updateEndTimeDisplay();
 };
 //Keypad:cancel
 document.getElementById("timeCancel").onclick = ()=>{
@@ -603,6 +604,7 @@ function renderList(){
         const label = document.createElement('span');
         label.className = 'exercise-label';
         label.textContent = item;
+        li.tag=label.textContent
 
         // custom duration input (seconds)
         const timeInput = document.createElement('input');
@@ -630,16 +632,8 @@ function renderList(){
             }
         };
 
-        /*Old preset saving
-        const store = () => {
-            presets[item] = { value: timeInput.value };
-            savePresets(presets);
-        };*/
-        /*timeInput.addEventListener('change', () => { store(); });*/
-
         left.appendChild(checkBtn);
         left.appendChild(label);
-        left.appendChild(timeInput);
         applyPreset();
 
         // right group: time selectors and controls
@@ -700,6 +694,7 @@ function renderList(){
                 //TESTING li.classList.remove('current');
                 //TESTING if (currentLi === li) currentLi = null;
             }
+            updateEndTimeDisplay();
         });
 
         // click starts timer  !!!Updated: only left starts timer
@@ -719,7 +714,6 @@ function renderList(){
             currentLi = li;
             currentCheck = checkBtn;
 
-            console.log(li,currentLi)
             //TESTING: uncheck checked item if it is clicked
             timer.reset();
             timer.start();
@@ -727,8 +721,70 @@ function renderList(){
 
         list.appendChild(li);
     });
+
+    updateEndTimeDisplay();
 }
 
+//const remainingSeconds = sumUncheckedDurations(list);
+//Function: get ending aprox.
+function getWorkoutEndTime(){
+
+    let remainingSeconds = sumUncheckedDurations(list);
+
+    // subtract current exercise remaining time difference
+    if (timer && timer.remaining !== undefined) {
+
+        const currentInput = currentLi?.querySelector(".time-input");
+
+        if (currentInput){
+            const full = parseInt(currentInput.dataset.seconds);
+            remainingSeconds -= (full - timer.remaining);
+
+        }
+    }
+
+    const now = new Date();
+    //console.log("remaining seconds:",remainingSeconds)
+    return new Date(now.getTime() + remainingSeconds * 1000);
+}
+function formatClockTime(date){
+
+    return date.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+}
+function updateEndTimeDisplay(){
+
+    const endTime = getWorkoutEndTime();
+    document.getElementById("endTime").textContent =
+        "Ends at: " + formatClockTime(endTime);
+}
+
+//TESTING: MY function
+function updateEndTimeDisplay(){
+    let remainingSeconds = sumUncheckedDurations(list);
+
+    // subtract current exercise remaining time difference
+    try {if (timer && timer.remaining !== undefined) {
+
+        const currentInput = currentLi?.querySelector(".time-input");
+
+        if (currentInput){
+            const full = parseInt(currentInput.dataset.seconds);
+            remainingSeconds -= (full - timer.remaining);
+        }
+    }
+    //console.log("remaining secs:",remainingSeconds)
+    document.getElementById("endTime").textContent =
+        (Math.ceil(remainingSeconds/60)) +" min left"
+    }
+    catch{}
+    //document.addEventListener("click", () => console.log(remainingSeconds))
+}
+//document.addEventListener("click", () => console.log(sumUncheckedDurations(list)))
+// document.addEventListener("click", () => updateEndTimeDisplay())
 </script>
 
 </body>
