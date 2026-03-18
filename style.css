@@ -261,13 +261,13 @@ h2{
 
 #timer #timerLabel{
     text-align:center; font-weight:600;color:var(--timertitle);font-size:20px;
-    font-family:'Poppins', sans-serif;line-height: clamp(20px,6.2vh,35px);}
+    font-family:'Poppins', sans-serif;line-height: clamp(23px,4.4vh,33px);}
 
 #timeDisplay{
     font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
     font-weight:900;
     background:#f1f5f9;
-    padding:8px 18px;
+    padding:5px 18px;
     border-radius:8px;
     font-size:47px;
     color:#0b1220;
@@ -487,6 +487,10 @@ button{
         .title-stacked{gap:5px}
         .title-plus-icons #audioUnlockBtn{height:18%; width:18%;}
         .drag-handle{display: none;}
+        button.middled{margin-bottom:0}
+        #timer{ gap:8px;}
+        #timer #timerLabel{font-size:18px}
+        #timeDisplay{padding: 5px 18px; font-size: 35px;}
         
     }
 }
@@ -627,7 +631,8 @@ button{
         .drag-handle{display: none;}
         .check-circle{margin-right:0px;}
         
-        #timer{margin-left: 0;margin-right: 0;}
+        button.middled{margin-bottom:0}
+        #timer{margin-left: 0;margin-right: 0; gap:8px}
         #timer #timerLabel.timer-label{
             font-size:21px /*!important*/;
             /* line-height: 3vh; */
