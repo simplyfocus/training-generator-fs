@@ -2,29 +2,30 @@ const ExLibrary = [
 
         // Strength ========
         {name: "Calf Raises", type:"exercise", targets:["Strength", "Calves"]},
-        {name: "Clamshell", type:"exercise", targets:["Strength", "Groin"]},
+        {name: "Clamshell", type:"exercise", targets:["Strength", "Groin", "Turnout"]},
         {name: "Glute Bridge", type:"exercise", targets:["Strength", "Glutes"]},
         {name: "High Plank", type:"exercise", targets:["Strength", "Core"]},
         {name: "Landing kicks", type:"exercise", targets:["Strength", "Glutes","Legs","Quads"]},
         {name: "Landing Position Hold", type:"exercise", targets:["Strength", "Legs", "Glutes"]},
         {name: "Lower Back Extensions", type:"exercise", targets:["Strength", "Back"]},
         {name: "Low plank", type:"exercise", targets:["Strength", "Core"]},
-        {name: "Lunge", type:"exercise", targets:["Strength", "Legs", "Glutes"]},
+        {name: "Lunges", type:"exercise", targets:["Strength", "Legs", "Glutes"]},
         {name: "Lying Leg Raises", type:"exercise", targets:["Strength", "Core"]},
-        {name: "Push-up", type:"exercise", targets:["Strength", "Chest", "Arms"]},
+        {name: "Push-ups", type:"exercise", targets:["Strength", "Chest", "Arms"]},
         {name: "Russian Twists", type:"exercise", targets:["Strength", "Core", "Power"]},
-        {name: "Squat", type:"exercise", targets:["Strength", "Legs", "Quads"]},
-        {name: "Superman", type:"exercise", targets:["Strength", "Back"]},
+        {name: "Squats", type:"exercise", targets:["Strength", "Legs", "Quads"]},
+        {name: "Supermans", type:"exercise", targets:["Strength", "Back"]},
         {name: "V-ups", type:"exercise", targets:["Strength", "Core"]},
         {name: "Wall Sit", type:"exercise", targets:["Strength", "Legs", "Glutes"]},
         
 
         // Balance ========
-        {name: "Arabesque Hold", type:"exercise", targets:["Strength", "Balance","Glutes", "Hamstrings"]},
+        {name: "Arabesque Hold", type:"exercise", targets:['Strength', 'Balance', 'Glutes', 'Hamstrings', 'Back', 'Legs']},
         {name: "Bosu Ball Balance", type:"exercise", targets:["Balance"]},
         {name: "Camel hold", type:"exercise", targets:["Hamstrings"]},
         {name: "Closed-eye landing", type:"exercise",targets:["Balance"]},
         {name: "Heel-to-Toe Walk", type:"exercise", targets:["Balance"]},
+        {name: "Landing pulses", type:"exercise", targets:["Balance","Strength","Legs","Quads"]},
         {name: "Pistol Squat", type:"exercise", targets:["Strength", "Balance","Legs", "Glutes"]},
         {name: "Single-leg Stand", type:"exercise", targets:["Balance"]},
         {name: "Stability Ball Exercises", type:"exercise", targets:["Balance"]},
@@ -39,7 +40,7 @@ const ExLibrary = [
         {name: "Fwd skater jumps", type:"exercise", targets:["Calves","Power"]},
         {name: "Lateral Bounds", type:"exercise", targets:["Legs", "Power"]},
         {name: "Skater Hops", type:"exercise", targets:["Legs", "Power"]},
-        {name: "Tap Jump", type:"exercise", targets:["Legs", "Calves"]},
+        {name: "Tap Jumps", type:"exercise", targets:["Legs", "Calves"]},
         {name: "Tuck Jumps", type:"exercise", targets:["Legs", "Core","Power"]},
         {name: "3➡️jumps + stick (2legs) + 🔁", type:"exercise", targets:["Power"]},
         {name: "➡️jump + ⬆️jump + stick (1leg)", type:"exercise", targets:["Power"]},
@@ -63,7 +64,7 @@ const ExLibrary = [
         {name: "Butterfly stretch", type:"stretch", targets:["Hips"]},
         {name: "Cat-cow", type:"stretch", targets:["Back"]},
         {name: "Child's pose", type:"stretch", targets:["Back"]},
-        {name: "Clamshell", type:"stretch", targets:["Turnout"]},
+        {name: "Clamshell (stretch)", type:"stretch", targets:["Turnout"]},
         {name: "Cobra", type:"stretch", targets:["Back"]},
         {name: "Couch stretch", type:"stretch", targets:["Quads"]},
         {name: "Cross-body shoulder stretch", type:"stretch", targets:["Shoulders"]},
@@ -72,7 +73,7 @@ const ExLibrary = [
         {name: "Extended lunge", type:"stretch", targets:["Hamstrings"]},
         {name: "Frog pose", type:"stretch", targets:["Hips"]},
         {name: "Front splits", type:"stretch", targets:["Front split"]},
-        {name: "High kick", type:"stretch", targets:["Hamstrings"]},
+        {name: "High kicks", type:"stretch", targets:["Hamstrings"]},
         {name: "Lunge (stretch)", type:"stretch", targets:["Front split","Hips"]},
         {name: "Lying spine twist", type:"stretch", targets:["Back"]},
         {name: "Lying quad stretch", type:"stretch", targets:["Quads"]},
@@ -80,13 +81,48 @@ const ExLibrary = [
         {name: "Passe", type:"stretch", targets:["Extensions"]},
         {name: "Plantarflexion stretch", type:"stretch", targets:["Ankles"]},
         {name: "Pull arm behind head", type:"stretch", targets:["Shoulders"]},
-        {name: "Seated turnout stretch", type:"stretch", targets:["Turnout"]},
+        {name: "Shoulder-to-knee turnout stretch", type:"stretch", targets:["Turnout"]},
         {name: "Sciatic glides", type:"stretch", targets:["Hamstrings"]},
         {name: "Standing hamstring stretch", type:"stretch", targets:["Hamstrings"]},
         {name: "Standing pancake", type:"stretch", targets:["Middle split","Hips"]},
-        {name: "Standing turnout stretch", type:"stretch", targets:["Turnout"]},
         {name: "Straddle", type:"stretch", targets:["Middle split"]},
         {name: "Wall shoulder stretch", type:"stretch", targets:["Shoulders"]},
+
+
+
+
+        //CHAT
+        {name: "Split Jump Lunges", type: "exercise", targets: ["Power", "Legs"] },
+        {name: "Single-leg Hops", type: "exercise", targets: ["Power", "Balance", "Legs"] },
+        {name: "Depth Jumps", type: "exercise", targets: ["Power", "Legs"] },
+
+        {name: "Plank", type: "exercise", targets: ["Strength", "Core"] },
+        {name: "Side Plank", type: "exercise", targets: ["Strength", "Core"] },
+
+        {name: "Superman Hold", type: "exercise", targets: ["Strength", "Back"] },
+
+        {name: "Step-ups", type: "exercise", targets: ["Strength", "Legs"] },
+
+        {name: "Single-leg Deadlift", type: "exercise", targets: ["Balance", "Strength", "Legs"] },
+
+        {name: "Single-leg Axel takeoff hops", type: "exercise",
+            targets: ["Power", "Jumps", "Ankles", "Quads", "Glutes"]},
+        {name: "Back outside edge jump simulation", type: "exercise",
+            targets: ["Power", "Balance", "Glutes", "Hamstrings"]},
+        {name: "Split jump to controlled landing", type: "exercise",
+            targets: ["Power", "Balance", "Core", "Hip Flexors"]},
+        {name: "Rotational jump with checked landing", type: "exercise",
+            targets: ["Power", "Core", "Balance"]},
+        {name: "Loop jump takeoff pulses", type: "exercise",
+            targets: ["Power", "Calves", "Ankles"]},
+        {name: "Developpé slow extension (front/side/back)", type: "exercise",
+            targets: ["Strength", "Hip Flexors", "Quads", "Balance"]},
+        {name: "Rotations combo 3x", type:"exercise", 
+            targets: ["Cardio", "Power"]},
+        {name: "Active front split lifts", type: "stretch",
+            targets: ["Hamstrings", "Hip Flexors"]},
+        {name: "Foot roll-throughs", type: "stretch",
+            targets: ["Ankles", "Feet"]},
 ];
 
 
