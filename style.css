@@ -14,7 +14,7 @@
     --gradbttm:#9daaca;
 
     --text:#071232;
-    --colordark:#0f172a;
+    --text-muted:#071232ae;
     --timerboxtop:rgba(181, 202, 220, 0.9);
     --timerboxbttm:rgba(152, 169, 193, 0.9);
     --timertitle:#2c2e2f;
@@ -59,10 +59,11 @@
         --gradbttm:rgba(8, 35, 85, 0.9);
         
         --text: #e1e6ec;
+        --text-muted:#b2c1d2b6;
 
         --timerboxtop:rgba(176, 202, 237, 0.9);
-        --timerboxbttm:rgba(57, 82, 104, 0.9);
-        --timertitle:#1a0e72;
+        --timerboxbttm:rgba(9, 20, 43, 0.914);
+        --timertitle:#0e0170;
         --barpurple:#7e3cf0;
 
         --funkyLeft: var(--timertitle);
@@ -247,8 +248,8 @@ h2{
     gap:10px;
     padding:12px 7px;
     border-radius:22px;
-    background:linear-gradient(180deg,var(--timerboxtop),var(--timerboxbttm));
-    border:3px solid var(--bg-transparent);
+    background:linear-gradient(180deg,var(--timerboxtop) , var(--timerboxbttm) ); /*00000013*/
+    border:3px solid var(--bg);
     /* max-width:360px; */
     margin:14px auto 0px auto;
 
@@ -257,7 +258,7 @@ h2{
     top:12px;
     z-index:100;
 
-    box-shadow:0 12px 30px rgba(0,0,0,0.35);
+    box-shadow:0 12px 30px rgba(0, 0, 0, 0.438);
     backdrop-filter: blur(6px);
 }
 
@@ -285,8 +286,9 @@ button#pauseBtn{background:#757f8e}
 button#resetBtn{background:#ef4444}
 
 #endTime{
-    font-family:'Trebuchet MS', sans-serif;
-    color:var(--colordark);
+    font-family:'Inter';
+    font-weight:500;
+    color:var(--text-muted);
     margin:3px 0 0;
 }
 
@@ -352,7 +354,7 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
 
 /* Check circle for marking exercises done */
 .check-circle{
-    width:26px;height:26px;border-radius:50%;border:2px solid rgba(7,18,50,0.08);
+    width:26px;height:26px;border-radius:50%;border:2px solid rgba(102, 110, 124, 0.44) ;
     background:transparent;display:inline-flex;align-items:center;justify-content:center;
     margin-right:12px;flex:0 0 auto;cursor:pointer;transition:background .12s ease,border-color .12s ease,transform .08s;
 }
@@ -493,6 +495,14 @@ button{
         #timer{ gap:8px;}
         /*#timer #timerLabel{font-size:18px}*/
         #timeDisplay{padding: 5px 18px; font-size: 37px;}
+
+
+        body{padding:13px;}
+        .container{padding:13px; gap:25px}
+        #workoutList li{
+            padding: 10px 10px; border-radius: 16px;
+        }
+        .check-circle{margin-right:0;}
         
     }
 }
@@ -500,15 +510,22 @@ button{
 /*   PORTRAIT MODE   */
 @media (orientation: portrait) {
 
-    .body{
-        padding: 20px 0;
+    main{height:100%}
+    body{
+        padding:10px;
     }
+
+    .title-main{
+        font-size:34px;
+    }
+    #workout-page{height:100%}
+
     .container{
         grid-template-columns: 1fr;
         gap:20px;
-        /*width:100%;*/
-        /*width:94vw;*/
         padding:20px;
+        height:100%;
+        max-height:calc(100dvh - 20px);
     }
 
     .main-col{
@@ -520,20 +537,19 @@ button{
         justify-content:stretch;
 
         /* CHAT GPT */
-        max-height:60vh;
         overflow-y:auto;
         -webkit-overflow-scrolling:touch;
-        max-height:70vh;
-        overflow-y:auto;
         padding-top: 10px;
+        height:100%;
+        max-height: 100%;
     }
 
     ul{
         width:100%;
         gap:14px;
     }
-    #selectedList{
-        gap:clamp(10vh)/*10px*/
+    ul#selectedList{
+        gap:10px/*10px*/
     }
 
     li{
@@ -544,23 +560,8 @@ button{
         font-size:18px;
     }
     .exercise-label{font-size:16px}
-
-    /* .time-input{
-        width:70px;
-        height:36px;
-        font-size:18px;
-    }*/
-
     
     /* NEW */
-    body{
-        padding:10px;
-    }
-
-    .title-main{
-        font-size:34px;
-    }
-
     .day-pill{
         font-size:16px;
         padding:8px 16px;
@@ -571,67 +572,33 @@ button{
         height:70px;
     }
 
+    #timer{
+        width: 100%;
+    }
+    #timeDisplay{
+        font-size:8.5vw;
+        background-color: #f6f6f6;
+    }
+    
     .drag-handle{
         font-size:24px;
         padding:6px;
     }
 
-    #timeDisplay{
-        font-size:8.5vw;
-        background-color: #f6f6f6;
-    } /* NOT working */
-
-    #timer{
-        width: 100%;
-    }
-    /* END NEW */
-    
-
-    /* VS suggestion */
     /* hide scrollbar but still allow scrolling on mobile */
     .side-col::-webkit-scrollbar{
         display:none;
     }
 
-    /*   ADDITIONS FOR SIZE   
-    .title-main{
-        font-size: clamp(28px,6vw,36px);
-    }
-    
-    body{
-        font-size: 20vw;
-    }
-    
-    h1{
-        font-size: 20vw;
-    }
-    
-    li{
-        font-size: 1.05rem;
-        padding: 14px 18px;
-        width: 100%;
-        border-radius: 16px;
-    }
-    .container{
-        width:100%;
-        max-width:none;
-        padding:16px 12px;
-    }*/
     
     @media (max-width: 400px) {
         
-        .body{padding:8px;}
+        /*body{padding:8px;}*/
         .container{padding:17px;}
         #workoutList li{
             font-size:150%;
             padding: 10px 5px; border-radius: 16px;
         }
-        
-        /* .time-input{
-            width:32px; height:32px; background-color: #c3ccde; border-radius: 10px;
-            font-size:20px; font-weight: 600;
-            font-family: 'Inconsolata', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', monospace;
-        }*/
         
         .drag-handle{display: none;}
         .check-circle{margin-right:0px;}
