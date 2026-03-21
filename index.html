@@ -13,15 +13,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="skate icon (1).ico">
     <link rel="icon" type="image/png" sizes="192x192" href="skate icon (1).ico">
     <link rel="icon" type="image/png" sizes="512x512" href="skate icon (1).ico">
-    <audio id="alertSound" src="workout10sec.mp3" preload="auto"></audio>
-    <script src="exercise-library.js"></script>
+    <audio id="alertSound" src="../workout10sec.mp3" preload="auto"></audio>
+    <script src="../exercise-library.js"></script>
     <link rel="stylesheet" href="style.css">
     <!-- use Google Poppins for headers -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- header font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&family=Inconsolata:wght@400;700&family=Inter:wght@400&display=swap" rel="stylesheet">
 
 </head>
 <body>
@@ -722,43 +721,15 @@ function renderList(){
 }
 
 //const remainingSeconds = sumUncheckedDurations(list);
-//Function: get ending aprox.
-function getWorkoutEndTime(){
-
-    let remainingSeconds = sumUncheckedDurations(list);
-
-    // subtract current exercise remaining time difference
-    if (timer && timer.remaining !== undefined) {
-
-        const currentInput = currentLi?.querySelector(".time-input");
-
-        if (currentInput){
-            const full = parseInt(currentInput.dataset.seconds);
-            remainingSeconds -= (full - timer.remaining);
-
-        }
-    }
-
-    const now = new Date();
-    //console.log("remaining seconds:",remainingSeconds)
-    return new Date(now.getTime() + remainingSeconds * 1000);
-}
 function formatClockTime(date){
 
     return date.toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit'
     });
-
-}
-function updateEndTimeDisplay(){
-
-    const endTime = getWorkoutEndTime();
-    document.getElementById("endTime").textContent =
-        "Ends at: " + formatClockTime(endTime);
 }
 
-//TESTING: MY function
+//Function: update remaining time message
 function updateEndTimeDisplay(){
     let remainingSeconds = sumUncheckedDurations(list);
 
