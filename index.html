@@ -13,14 +13,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="skate icon (1).ico">
     <link rel="icon" type="image/png" sizes="192x192" href="skate icon (1).ico">
     <link rel="icon" type="image/png" sizes="512x512" href="skate icon (1).ico">
-    <audio id="alertSound" src="workout10sec.mp3" preload="auto"></audio>
-    <script src="exercise-library.js"></script>
+    <audio id="alertSound" src="../workout10sec.mp3" preload="auto"></audio>
+    <script src="../exercise-library.js"></script>
     <link rel="stylesheet" href="style.css">
     <!-- use Google Poppins for headers -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- header font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inconsolata:wght@400;700&family=Inter:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inconsolata:wght@400;700&family=Inter&display=swap" rel="stylesheet">
 
 </head>
 <body>
@@ -157,7 +157,7 @@ const selects = document.querySelectorAll("select");
 const raw_target_list = document.getElementById("selectedList");
 const generateBtn = document.getElementById("generateWorkout");
 const planBtn = document.getElementById("usePlanBtn")
-const mainOptions = ["Power", "Strength", "Cardio", "Stretch", "random"]
+const mainOptions = ["Power", "Strength", "Cardio", "Stretch", "random", "Salchow", "Toe-loop", "Loop","Flip","Lutz","Axel"]
 workoutSelection=[];
 displayItems=[];
 const generatorPage = document.getElementById("target-selection");
@@ -537,7 +537,8 @@ function renderList(){
         li.title = 'Click to start timer';
 
         /*TESTING COLORS AND TYPES*/
-        li.className = item.type || "";
+        if (item.targets && item.targets.includes("Drills")){li.className = "drill"}
+        else{ li.className = item.type || "";}
         item = item.name || item;
 
         li.draggable = false; // only handle will be draggable
