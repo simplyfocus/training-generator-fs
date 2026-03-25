@@ -44,8 +44,8 @@ const ExLibrary = [
         {name: "Tuck Jumps", type:"exercise", targets:["Legs", "Core","Power"]},
         {name: "3➡️jumps + stick (2legs) + 🔁", type:"exercise", targets:["Power"]},
         {name: "➡️jump + ⬆️jump + stick (1leg)", type:"exercise", targets:["Power"]},
-        {name: "3➡️jumps + 3⬅️jump + stick (1leg)", type:"exercise", targets:["Power"]},
-        {name: "3➡️jumps + 3⬅️jump + landing (2legs)", type:"exercise", targets:["Power"]},
+        {name: "3➡️jumps + 3⬅️jump + landing (1leg)", type:"exercise", targets:["Power"]},
+        {name: "3➡️jumps + 3⬅️jump + stick (2legs)", type:"exercise", targets:["Power"]},
 
         // Cardio ========
         {name: "Burpees", type:"exercise", targets:["Cardio"]},
@@ -110,19 +110,42 @@ const ExLibrary = [
         {name: "Back outside edge jump simulation", type: "exercise",
             targets: ["Power", "Balance", "Glutes", "Hamstrings"]},
         {name: "Split jump to controlled landing", type: "exercise",
-            targets: ["Power", "Balance", "Core", "Hip Flexors"]},
+            targets: ["Power", "Balance", "Core", "Hip flexors"]},
         {name: "Rotational jump with checked landing", type: "exercise",
             targets: ["Power", "Core", "Balance"]},
         {name: "Loop jump takeoff pulses", type: "exercise",
             targets: ["Power", "Calves", "Ankles"]},
         {name: "Developpé slow extension (front/side/back)", type: "exercise",
-            targets: ["Strength", "Hip Flexors", "Quads", "Balance"]},
+            targets: ["Strength", "Hip flexors", "Quads", "Balance"]},
         {name: "Rotations combo 3x", type:"exercise", 
             targets: ["Cardio", "Power"]},
         {name: "Active front split lifts", type: "stretch",
-            targets: ["Hamstrings", "Hip Flexors"]},
+            targets: ["Hamstrings", "Hip flexors"]},
         {name: "Foot roll-throughs", type: "stretch",
             targets: ["Ankles", "Feet"]},
+
+        
+        {name: "Toe pick vault jumps (single-leg)", type: "exercise",
+            targets: ["Drills", "Toe-loop", "Flip", "Lutz", "Calves", "Ankles", "Feet"]},
+        {name: "Outside edge to pick vault (lutz + toeloop)", type: "exercise",
+            targets:["Drills", "Lutz", "Toe-loop", "Quads"]},
+        {name: "Lutz IN-to-OUT edge change", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
+
+        {name: "drill1", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
+        {name: "drill1", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
+        {name: "drill1", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
+        {name: "drill1", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
+        {name: "drill1", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
+        {name: "drill1", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
+        {name: "drill1", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
 ];
 
 
@@ -304,6 +327,17 @@ function sumUncheckedDurations(list){
     return total;
 }
 
+function dedupeObjects(originalList, at1, at2){
+    const seen = new Set();
+    const deduped = originalList.filter(obj => {
+        const key = obj[at1] + "|" + obj[at2]; // or whatever fields matter
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+    return deduped
+}
+
 // ===== Day Class =====
 class Day {
     constructor(_wkSelection) {
@@ -321,6 +355,27 @@ class Day {
 
     getJumps() {
         return this.jumps || null;
+    }
+
+    getDrills() {
+        if (!this.jumps) return null;
+
+        let result = [];
+        if (Array.isArray(this.jumps)) {
+            for (let target of this.jumps) {
+                    result.push(...ExLibrary
+                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Drills") && ex.targets.includes(target)));
+            }    
+        } else if (typeof this.strength === "string") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes(this.jumps))//-------.map(ex => ex.name);
+
+        } else if (typeof this.strength === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Drills"))//-------.map(ex => ex.name);
+        } 
+        result= dedupeObjects(result, "name", "type") // dedupe
+        if (result.length > 4) { result = randomSample(result, 4);}
+
+        return result.length ? result : null;
     }
 
     getPower() {
@@ -405,6 +460,7 @@ class Day {
 
     getALL() {
         let todos = [];
+        if (this.getDrills()) todos.push(...this.getDrills());
         if (this.getJumps()) todos.push(...this.getJumps());
         if (this.getPower()) todos.push(...this.getPower());
         if (this.getStrength()) todos.push(...this.getStrength());
