@@ -289,7 +289,7 @@ h2{
 .progress-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--j-current),var(--barpurple));transition:width .35s linear}
 
 button#startBtn{background:#0a4496e1}
-button#pauseBtn{background:#637085e1;font-weight: 500;}
+button#pauseBtn{background:#637085e1}
 button#resetBtn{background:#f63d3de1}
 
 #endTime{
