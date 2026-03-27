@@ -272,10 +272,11 @@ function loadPresets(){
     catch(e){ return {}; }
 }
 function savePresets(obj){
-    try { localStorage.setItem(presetKey,JSON.stringify(obj)); }
+    try { localStorage.setItem(presetKey,JSON.stringify(obj)) }
     catch(e){ console.warn('could not save presets',e); }
 }
 const presets = loadPresets();
+
 
 // ===== Simple Timer =====
 class Timer {
@@ -297,13 +298,14 @@ class Timer {
     }
 
     update() {
+
         this.display.textContent = this.format(this.remaining);
         this.labelElem.textContent = this.currentLabel;
         if (this.progressFill) {
             const pct = this.duration > 0 ? ((this.duration - this.remaining) / this.duration) * 100 : 0;
             this.progressFill.style.width = Math.max(0, Math.min(100, pct)) + '%';
         }
-        updateEndTimeDisplay();
+        updateEndTimeDisplay();        
     }
 
     start() {
@@ -323,6 +325,11 @@ class Timer {
             }
             this.remaining -= 1;
             this.update();
+            
+            if(currentLi){currentLi.dataset.goneSeconds = Number(currentLi.dataset.goneSeconds) + 1; updateBar(currentLi)} // testing
+
+            if(currentLi.classList.contains("done")){ currentCheck.click()}
+
         }, 1000);
 
         // if sound was playing before, resume it when timer starts again
@@ -408,6 +415,9 @@ resetBtn.addEventListener('click', () => {
     const newTime = parseInt(input.dataset.seconds);
 
     timer.reset(newTime);   // pass updated time
+    currentLi.dataset.goneSeconds = 0;
+    updateBar(currentLi);
+    timer.start()
 });
 
 //Helper function: time format and updating
@@ -454,7 +464,6 @@ let activeInput = null;
 let currentTime = 0;
 
 document.addEventListener("click", e => {
-
 
     if(e.target.classList.contains("time-input")){
         activeInput = e.target;
@@ -508,18 +517,26 @@ editor.querySelectorAll("[data-adjust]").forEach(btn => {
 //Keypad:confirm
 document.getElementById("timeOK").onclick = ()=>{
     // 1️⃣ update input display & dataset
+    const addedTime = currentTime - activeInput.dataset.seconds;
     activeInput.dataset.seconds = currentTime;
     activeInput.value = formatTime(currentTime);
 
     // 2️⃣ save preset
     //const exerciseName = activeInput.dataset.exercise; // or use label
-    const exerciseName = activeInput.id;
+    const exerciseName = activeInput.id.replaceAll("-input","");
     presets[exerciseName] = { value: currentTime };
     savePresets(presets);
 
     editor.classList.add("hidden");
 
     updateEndTimeDisplay();
+    updateBar(document.getElementById(exerciseName))
+
+    if(exerciseName === timer.currentLabel){
+        timer.duration = currentTime;
+    timer.remaining += addedTime;//console.log("updated duration of timer to:",timer.duration, "timer.remaining:",timer.remaining)
+    }
+    //console.log(exerciseName.replaceAll("-input",""))
 };
 //Keypad:cancel
 document.getElementById("timeCancel").onclick = ()=>{
@@ -527,12 +544,57 @@ document.getElementById("timeCancel").onclick = ()=>{
 };
 
 
+
+function getIndex(li) {
+    return Array.from(li.parentNode.children).indexOf(li);
+}
+
+function reorderList(list, option, index, targetIndex = null) {
+
+    const items = list.children;
+
+    if (option === "one-up") {
+        //console.log("'one-up'", index)
+        if (index <= 0) return;
+
+        const item = items[index];
+        const prev = items[index - 1];
+
+        //console.log("item:",item,"prev:",prev)
+        list.insertBefore(item, prev);
+    }
+
+    else if (option === "one-down") {
+        if (index >= items.length - 1) return;
+
+        const item = items[index];
+        const next = items[index + 1];
+
+        list.insertBefore(next, item);
+    }
+
+    else if (option === "dragging") {
+        if (targetIndex === null || targetIndex === index) return;
+
+        const item = items[index];
+        const target = items[targetIndex];
+
+        if (index < targetIndex) {
+            list.insertBefore(item, target.nextSibling);
+        } else {
+            list.insertBefore(item, target);
+        }
+    }
+}
+
+
+
 // helper to redraw list based on displayItems
 function renderList(){
     list.innerHTML = '';
     displayItems.forEach((item,index) => {
         const li = document.createElement("li");
-        li.setAttribute('data-order', index);
+        //li.setAttribute('data-order', index);
         li.tabIndex = 0;
         li.title = 'Click to start timer';
 
@@ -549,42 +611,37 @@ function renderList(){
         handle.textContent = '☰';
         handle.title = 'Drag to reorder';
         handle.addEventListener('mousedown', e=> e.stopPropagation());
+        let draggedIndex=null;
         
-        handle.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', index.toString());
-            e.dataTransfer.effectAllowed = 'move';
-            li.classList.add('dragging');
+        handle.addEventListener('dragstart', () => {
+            handle.closest("li").classList.add("dragging");
         });
-        handle.addEventListener('dragend', () => {
-            li.classList.remove('dragging');
+
+        handle.addEventListener("dragend", () => {
+            document.querySelectorAll(".dragging")
+                .forEach(el => el.classList.remove("dragging"));
         });
-        li.addEventListener('dragover', e => {
+
+        list.addEventListener('dragover', (e) => {
+
             e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            const dragging = document.querySelector('.dragging');
-            if (!dragging || dragging === li) return;
-            const fromIndex = parseInt(dragging.getAttribute('data-order'),10);
-            const toIndex = index;
-            if (isNaN(fromIndex)) return;
-            // move visual only, array updated on drop
-            // insert placeholder depending on position
-            const bounding = li.getBoundingClientRect();
-            const offset = e.clientY - bounding.top;
-            if (offset > bounding.height/2) {
-                li.after(dragging);
+
+            const targetLi = e.target.closest("li");
+            const draggingEl = document.querySelector(".dragging");
+
+            if (!targetLi || !draggingEl || targetLi === draggingEl) return;
+
+            const rect = targetLi.getBoundingClientRect();
+            const offset = e.clientY - rect.top;
+
+            if (offset > rect.height / 2) {
+                list.insertBefore(draggingEl, targetLi.nextSibling);
             } else {
-                li.before(dragging);
+                list.insertBefore(draggingEl, targetLi);
             }
+
         });
-        li.addEventListener('drop', e => {
-            e.preventDefault();
-            const from = parseInt(e.dataTransfer.getData('text/plain'),10);
-            const to = index;
-            if (isNaN(from) || from === -1 || to === -1) return;
-            const [moved] = displayItems.splice(from,1);
-            displayItems.splice(to,0,moved);
-            renderList();
-        });
+
 
         // left group: check button + label
         const left = document.createElement('div');
@@ -600,7 +657,7 @@ function renderList(){
         const label = document.createElement('span');
         label.className = 'exercise-label';
         label.textContent = item;
-        li.tag=label.textContent
+        li.id=label.textContent
 
         // custom duration input (seconds)
         const timeInput = document.createElement('input');
@@ -609,12 +666,14 @@ function renderList(){
         timeInput.readOnly = true;
         timeInput.className = 'time-input';
 
-        timeInput.id = label.textContent; //TESTING
+        timeInput.id = label.textContent + "-input"; //TESTING
 
         timeInput.dataset.seconds = "60";  // store actual value
         timeInput.value = "01:00";         // visible time
 
         timeInput.title = 'duration';
+        li.dataset.seconds=0;
+        li.dataset.goneSeconds=0;//console.log("remaining seconds reset.")
 
         //timeInput.addEventListener('click', e => e.stopPropagation());
         //timeInput.addEventListener('keydown', e => e.stopPropagation());
@@ -631,6 +690,7 @@ function renderList(){
         left.appendChild(checkBtn);
         left.appendChild(label);
         applyPreset();
+        //sessionStorage.setItem("TESTING!!!", 203040);
 
         // right group: time selectors and controls
         const right = document.createElement('div');
@@ -648,9 +708,10 @@ function renderList(){
         upBtn.title = 'Move up';
         upBtn.addEventListener('click', e=>{
             e.stopPropagation();
-            if(index>0){
-                [displayItems[index-1],displayItems[index]] = [displayItems[index],displayItems[index-1]];
-                renderList();
+            const clickedIndex = getIndex(document.getElementById(item))
+            if(clickedIndex>0){
+                
+                reorderList(list, "one-up", clickedIndex)
             }
         });
         const downBtn = document.createElement('button');
@@ -659,9 +720,10 @@ function renderList(){
         downBtn.title = 'Move down';
         downBtn.addEventListener('click', e=>{
             e.stopPropagation();
-            if(index<displayItems.length-1){
-                [displayItems[index+1],displayItems[index]] = [displayItems[index],displayItems[index+1]];
-                renderList();
+            const clickedIndex = getIndex(document.getElementById(item))
+
+            if(clickedIndex<displayItems.length-1){
+                reorderList(list, "one-down", clickedIndex)
             }
         });
         controls.appendChild(upBtn);
@@ -673,9 +735,15 @@ function renderList(){
         right.appendChild(handle);
         right.appendChild(controls);
 
+        // progress bar for each exercise
+        const progressBar = document.createElement('div')
+        progressBar.className = 'progressBar'
+
         // assemble: left (text) + right (selectors/controls)
         li.appendChild(left);
         li.appendChild(right);
+        li.appendChild(progressBar);
+        // li.dataset.goneSeconds = 0; console.log("set to 0")
 
         // toggle done
         checkBtn.addEventListener('click', (e) => {
@@ -689,6 +757,7 @@ function renderList(){
             if (isDone && li.classList.contains('current')) {
                 //TESTING li.classList.remove('current');
                 //TESTING if (currentLi === li) currentLi = null;
+                if (currentLi === li) timer.pause();
             }
             updateEndTimeDisplay();
         });
@@ -697,7 +766,7 @@ function renderList(){
         left.addEventListener('click', () => {
             //previous: let seconds = (parseInt(timeInput.value, 10) || 1) * 60;
             //new:
-            const seconds = parseInt(timeInput.dataset.seconds)
+            const seconds = parseInt(timeInput.dataset.seconds) - Number(li.dataset.goneSeconds)
             // reveal timer when an exercise is selected
             if (timerContainer) timerContainer.style.display = 'flex';
             timer.setLabel(item);
@@ -734,25 +803,17 @@ function formatClockTime(date){
 function updateEndTimeDisplay(){
     let remainingSeconds = sumUncheckedDurations(list);
 
-    // subtract current exercise remaining time difference
-    try {if (timer && timer.remaining !== undefined) {
-
-        const currentInput = currentLi?.querySelector(".time-input");
-
-        if (currentInput){
-            const full = parseInt(currentInput.dataset.seconds);
-            remainingSeconds -= (full - timer.remaining);
-        }
-    }
     //console.log("remaining secs:",remainingSeconds)
     document.getElementById("endTime").textContent =
         (Math.ceil(remainingSeconds/60)) +" min left"
-    }
-    catch{}
+
     //document.addEventListener("click", () => console.log(remainingSeconds))
 }
-//document.addEventListener("click", () => console.log(currentLi))
-// document.addEventListener("click", () => updateEndTimeDisplay())
+
+
+// document.addEventListener("click", () => {updateBar(currentLi); updateBar(document.getElementById("Warm-up: dynamic stretches"))})
+// document.addEventListener("click", () => updateBar(currentLi, 30))
+
 </script>
 
 </body>
