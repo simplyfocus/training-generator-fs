@@ -198,6 +198,7 @@ button.funkyBtn{color:var(--text); font-family: 'Inter';
 button.middled{margin:0; padding:5px 10px;font-size:11px;}
 
 
+/*
 /* Main container */
 .container{
     width:min(900px,98%);
@@ -216,6 +217,7 @@ button.middled{margin:0; padding:5px 10px;font-size:11px;}
     /* max-width:90vw;*/
     box-sizing:border-box;
     justify-self:center;
+
 }
 
 .main-col{
@@ -489,6 +491,7 @@ button{
 
 /*   LANDSCAPE MODE   */
 @media (orientation: landscape) {
+    #workout-page{ padding-bottom: 13px;}
     .main-col{
         position: sticky;
         top: 7%;
