@@ -309,7 +309,7 @@ ul{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:10px;width:100%;}
 
 /* make each item full width and split into left/right areas */
 #workoutList li{
-    display:flex;position: relative; overflow:clip;
+    display:flex;position: relative; /*overflow:clip;*/
     align-items:center;justify-content:space-between;
     gap:0px 12px;padding:12px 14px;background:var(--accent);
     border-radius:10px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
