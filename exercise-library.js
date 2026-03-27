@@ -132,7 +132,7 @@ const ExLibrary = [
         {name: "Lutz IN-to-OUT edge change", type: "exercise",
             targets:["Drills", "Lutz", "Quads"]},
 
-        {name: "drill1", type: "exercise",
+        /*{name: "drill1", type: "exercise",
             targets:["Drills", "Lutz", "Quads"]},
         {name: "drill1", type: "exercise",
             targets:["Drills", "Lutz", "Quads"]},
@@ -145,7 +145,7 @@ const ExLibrary = [
         {name: "drill1", type: "exercise",
             targets:["Drills", "Lutz", "Quads"]},
         {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
+            targets:["Drills", "Lutz", "Quads"]},*/
 ];
 
 
@@ -313,7 +313,8 @@ function sumUncheckedDurations(list){
 
     list.querySelectorAll("li").forEach(li => {
 
-        const givenTime = document.getElementById(li.tag).dataset.seconds
+        const givenTime = document.getElementById(li.id + "-input").dataset.seconds - li.dataset.goneSeconds
+        //console.log("id:",li.id,"- remaining time:",givenTime)
         const isChecked = li.querySelector(".check-circle")
             .getAttribute("aria-pressed") === "true";
 
@@ -327,6 +328,7 @@ function sumUncheckedDurations(list){
     return total;
 }
 
+// De-dupe object list
 function dedupeObjects(originalList, at1, at2){
     const seen = new Set();
     const deduped = originalList.filter(obj => {
@@ -336,6 +338,16 @@ function dedupeObjects(originalList, at1, at2){
         return true;
     });
     return deduped
+}
+
+// Update progress bar of an exercise
+function updateBar(element){
+    //if (element === currentLi) { element.dataset.goneSeconds += timer.duration - timer.remaining }
+    element.children[2].style.width = (element.dataset.goneSeconds*100 / element.children[1].children[0].dataset.seconds)+"%"
+    
+    //console.log(element.id,"duration",element.children[1].children[0].dataset.seconds)
+    //console.log(element.id,"gone",Number(element.dataset.goneSeconds),"timer.duration",timer.duration,)
+    //console.log("updated",element.id.replaceAll("-input",""))
 }
 
 // ===== Day Class =====
