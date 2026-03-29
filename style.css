@@ -58,7 +58,7 @@
         --j-current: #1856ba;
         --muted: #465a7e;
         --accent: rgba(59, 131, 246, 0.114);
-        --accent-2: rgba(112, 157, 230, 0.2);
+        --accent-2: rgba(112, 157, 230, 0.229);
         --glass: rgba(116, 107, 159, 0.1);
         --gradbttm:rgba(8, 35, 85, 0.9);
         
@@ -156,9 +156,37 @@ button:active{transform:translateY(0);}
     min-height: 100px;
     padding: 6px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--card);
     font-size: 14px;
+    color: #ffffffcc;
+    background-color: var(--timerboxbttm);
 }
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+/* bar background */
+::-webkit-scrollbar-track {
+  background: #00000000;
+  border-radius: 12px;
+}
+
+/* The draggable thumb */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg,/*#ff880094, #e52e7194*/var(--accent-2),var(--j-current));
+  border-radius: 10px;
+  border: 4px solid transparent;
+  background-clip: content-box;
+}
+
+/* Thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff49;
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
 #categorySelect select:focus {
     border-color: #4a90e2;
     outline: none;
@@ -339,8 +367,10 @@ ul{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:10px;width:100%;}
 #workoutList li.drill:hover{background:var(--d-hover)}
 li .meta{font-size:12px;color:var(--muted);font-weight:500}
 
-/* Focus for keyboard accessibility */
+/* Focus for keyboard accessibility - moved to landscape media query *
 #workoutList li:focus{outline:3px solid rgba(37,99,235,0.18);outline-offset:2px}
+*/
+
 
 /* Responsive */
 @media (max-width:680px){
@@ -507,6 +537,8 @@ button{
         padding:10px 14px;
     }
 
+    #workoutList li:focus{outline:3px solid rgba(37,99,235,0.18);outline-offset:2px}
+
     @media (max-width:900px) {
         /* *{outline: solid red;}*/
         .app-icon{display: none;}
@@ -610,10 +642,10 @@ button{
         padding:6px;
     }
 
-    /* hide scrollbar but still allow scrolling on mobile */
+    /* hide scrollbar but still allow scrolling on mobile *
     .side-col::-webkit-scrollbar{
         display:none;
-    }
+    }*/
 
     
     @media (max-width: 400px) {
