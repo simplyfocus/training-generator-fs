@@ -132,8 +132,6 @@ const ExLibrary = [
         {name: "Lutz IN-to-OUT edge change", type: "exercise",
             targets:["Drills", "Lutz", "Quads"]},
 
-        /*{name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
         {name: "drill1", type: "exercise",
             targets:["Drills", "Lutz", "Quads"]},
         {name: "drill1", type: "exercise",
@@ -145,7 +143,9 @@ const ExLibrary = [
         {name: "drill1", type: "exercise",
             targets:["Drills", "Lutz", "Quads"]},
         {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},*/
+            targets:["Drills", "Lutz", "Quads"]},
+        {name: "drill1", type: "exercise",
+            targets:["Drills", "Lutz", "Quads"]},
 ];
 
 
@@ -311,7 +311,7 @@ function sumUncheckedDurations(list){
 
     let total = 0;
 
-    list.querySelectorAll("li").forEach(li => {
+    /*list.querySelectorAll("li")*/Array.from(workoutList.children).forEach(li => {
 
         const givenTime = document.getElementById(li.id + "-input").dataset.seconds - li.dataset.goneSeconds
         //console.log("id:",li.id,"- remaining time:",givenTime)
@@ -340,7 +340,20 @@ function dedupeObjects(originalList, at1, at2){
     return deduped
 }
 
-// Update progress bar of an exercise
+// Update general progress bar
+function updateGeneralBar(){
+    let totalWorkoutSec = 0;
+    Array.from(workoutList.children).forEach(li => {
+
+        const elementTime = li.children[1].children[0].dataset.seconds        
+        totalWorkoutSec += parseInt(elementTime || "0");
+    });
+
+    //console.log(totalWorkoutSec - sumUncheckedDurations(workoutList),' / ', totalWorkoutSec, ' = ',(1 - sumUncheckedDurations(workoutList) / totalWorkoutSec)*100+"%")
+    document.getElementById("generalBar").style.width = (1 - sumUncheckedDurations(workoutList) / totalWorkoutSec)*100+"%"
+}
+
+// Update progress bar OF AN EXERCISE
 function updateBar(element){
     //if (element === currentLi) { element.dataset.goneSeconds += timer.duration - timer.remaining }
     element.children[2].style.width = (element.dataset.goneSeconds*100 / element.children[1].children[0].dataset.seconds)+"%"
@@ -348,6 +361,8 @@ function updateBar(element){
     //console.log(element.id,"duration",element.children[1].children[0].dataset.seconds)
     //console.log(element.id,"gone",Number(element.dataset.goneSeconds),"timer.duration",timer.duration,)
     //console.log("updated",element.id.replaceAll("-input",""))
+
+    updateGeneralBar();
 }
 
 // ===== Day Class =====
