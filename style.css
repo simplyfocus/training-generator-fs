@@ -229,12 +229,14 @@ button.middled{margin:0; padding:5px 10px;font-size:11px;}
 /*
 /* Main container */
 .container{
+
+    /*TESTING*/ position: relative; overflow-x: hidden;
     width:min(900px,98%);
     background:var(--card);
     border-radius:14px;
     padding:17px;
     box-shadow:0 12px 30px rgba(16,24,40,0.08);
-    border:1px solid rgba(37,99,235,0.04);
+    /*border:1px solid rgba(37,99,235,0.04);*/
 
     display:grid;
     grid-template-columns: 1fr 1fr;
@@ -354,11 +356,25 @@ ul{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:10px;width:100%;}
 .progressBar{position: absolute; pointer-events: none;
   bottom: 0;
   left: 0;
-  height: 8%/*4px*/;
-  width: 0%; /* progress value */
+  height: 0.7dvh/*8% 4px*/;
+  width: 0; /* progress value */
   background: /*#00000030*linear-gradient(90deg, limegreen, gold)*var(--card)*/linear-gradient(90deg, limegreen, gold);
   transition: width 0.2s linear;
   opacity: 0.6;
+}
+
+/* General progress bar */
+#generalBar{
+    width: 0; height: 7px; border-top-right-radius: 40px; border-bottom-right-radius: 40px;
+    top:0; left:0; bottom:auto;
+    background:
+        
+        linear-gradient(90deg, var(--powSelect), var(--text)),
+        linear-gradient(0deg, var(--bg), transparent 20%),
+        linear-gradient(180deg, var(--bg), transparent 20%)
+    ;
+    
+    background-blend-mode: multiply;
 }
 
 #workoutList li:hover{background:var(--accent-2);transform:translateY(-4px);box-shadow:0 12px 24px rgba(2,6,23,0.06);}
