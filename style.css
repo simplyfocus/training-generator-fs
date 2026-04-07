@@ -168,7 +168,7 @@ button:active{transform:translateY(0);}
 /* bar background */
 ::-webkit-scrollbar-track {
   background: #00000000;
-  border-radius: 12px;
+  /*border-radius: 0 6px 6px 0;*/
 }
 
 /* The draggable thumb */
@@ -181,7 +181,7 @@ button:active{transform:translateY(0);}
 
 /* Thumb on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffffff49;
+  background: #535460fb;
   border-radius: 10px;
   border: 3px solid transparent;
   background-clip: content-box;
