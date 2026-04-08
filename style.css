@@ -3,25 +3,25 @@
 #dayName{display: none;}
 
 :root{
-    --bg:#8aa5c3;
-    --bg-transparent:#708cacb7;
-    --card:#e9eef7;
-    --j-current:#2a4787;
+    /*   --------------------   NEW color palette   --------------------   */
+    --bg:#98b7da67/*edf2f4*/;                       /* background */
+    --card:#efefef/*#8d99ae from palette 3c6e71 003566*/;                     /* card background */
+    --j-current:#2a4787;                /* jumps when active */
     --muted:#6b7280;
-    --accent:#7a95ce71;
-    --accent-2:rgb(159, 181, 197);     /*Hovered cards*/
+    --j-unc:#7a95ce71;
+    --accent:rgb(159, 181, 197);      /*Hovered cards*/
     --glass: rgba(255,255,255,0.7);
-    --gradbttm:#9daaca;
+    --gradbttm:#3463b967;
 
-    --text:#071232;
-    --text-muted:#071232ae;
-    --timerboxtop:rgba(181, 202, 220, 0.9);
-    --timerboxbttm:rgba(152, 169, 193, 0.9);
-    --timertitle:#2c2e2f;
-    --barpurple:#8b5cf6;
+    --text:#080a38;                     /* main text */
+    --text-muted:#071232ae;             /* end time display */
+    --timerboxtop:rgba(181, 202, 220, 0.9);     /* timer card top */
+    --timerboxbttm:rgba(152, 169, 193, 0.9);    /* timer card bottom */
+    --timertitle:#2c2e2f;               /* timer title text */
+    --barpurple:#7e4bf4;                /* right of progress bar */
 
-    --funkyLeft: #ffffff75 /*#9682cc31;*/;
-    --funkyRight: #ffffff60 /*#5573f631;*/;
+    --funkyLeft: #c7bdffcf/*#6232d0a2 /*#9682cc31;*/;      /* left of funky button inside */
+    --funkyRight: #8aaffe9f/*#153270 /*#5573f631;*/;     /* right of funky button inside */
 
     --e-unc:#632b765f;
     --s-unc:#2c93ad34;
@@ -47,6 +47,8 @@
     --stcSelect: #67bca0;
 
     --editor-bg: rgba(250, 250, 250, 0.937);
+
+    --check-border: rgba(102, 110, 124, 0.44);
 }
 
 /* Dark mode overrides using media query */
@@ -57,8 +59,8 @@
         --card: #061427;
         --j-current: #1856ba;
         --muted: #465a7e;
-        --accent: rgba(59, 131, 246, 0.114);
-        --accent-2: rgba(112, 157, 230, 0.229);
+        --j-unc: rgba(59, 131, 246, 0.114);
+        --accent: rgba(112, 157, 230, 0.229);
         --glass: rgba(116, 107, 159, 0.1);
         --gradbttm:rgba(8, 35, 85, 0.9);
         
@@ -132,6 +134,7 @@ button:active{transform:translateY(0);}
 
 #target-selection{padding-bottom:15px;}
 #categorySelect fieldset {
+    background: linear-gradient(180deg, transparent, var(--card) 10%);
     border: 2px solid #ddd;
     border-radius: 8px;
     padding: 20px;
@@ -156,10 +159,10 @@ button:active{transform:translateY(0);}
     min-height: 100px;
     padding: 6px;
     border-radius: 6px;
-    border: 1px solid var(--card);
+    border: 1px solid var(--check-border);
     font-size: 14px;
-    color: #ffffffcc;
-    background-color: var(--timerboxbttm);
+    color: var(--text-muted);
+    background-color: var(--bg);
 }
 
 ::-webkit-scrollbar {
@@ -173,7 +176,7 @@ button:active{transform:translateY(0);}
 
 /* The draggable thumb */
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg,/*#ff880094, #e52e7194*/var(--accent-2),var(--j-current));
+  background: linear-gradient(180deg,/*#ff880094, #e52e7194*/var(--accent),var(--j-current));
   border-radius: 10px;
   border: 4px solid transparent;
   background-clip: content-box;
@@ -273,7 +276,7 @@ h2{
     margin:15px 0 10px 30px;
     font-size:14px;
     text-align:left;
-    color:var(--timerboxtop);
+    color:var(--text-muted);
     font-family: 'Poppins', sans-serif;
 }
 
@@ -341,7 +344,7 @@ ul{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:10px;width:100%;}
 #workoutList li{
     display:flex;position: relative; overflow:clip;
     align-items:center;justify-content:space-between;
-    gap:0px 12px;padding:12px 14px;background:var(--accent);
+    gap:0px 12px;padding:12px 14px;background:var(--j-unc);
     border-radius:10px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
     cursor:pointer;color:var(--text);font-weight:600;width:100%;box-sizing:border-box;
 }
@@ -377,7 +380,7 @@ ul{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:10px;width:100%;}
     background-blend-mode: multiply;
 }
 
-#workoutList li:hover{background:var(--accent-2);transform:translateY(-4px);box-shadow:0 12px 24px rgba(2,6,23,0.06);}
+#workoutList li:hover{background:var(--accent);transform:translateY(-4px);box-shadow:0 12px 24px rgba(2,6,23,0.06);}
 #workoutList li.exercise:hover{background:var(--e-hover)}
 #workoutList li.stretch:hover{background:var(--s-hover)}
 #workoutList li.drill:hover{background:var(--d-hover)}
@@ -424,7 +427,7 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
 
 /* Check circle for marking exercises done */
 .check-circle{
-    width:26px;height:26px;border-radius:50%;border:2px solid rgba(102, 110, 124, 0.44) ;
+    width:26px;height:26px;border-radius:50%;border:2px solid var(--check-border) ;
     background:transparent;display:inline-flex;align-items:center;justify-content:center;
     margin-right:12px;flex:0 0 auto;cursor:pointer;transition:background .12s ease,border-color .12s ease,transform .08s;
 }
