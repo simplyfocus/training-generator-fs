@@ -442,7 +442,7 @@ li .meta{font-size:12px;color:var(--muted);font-weight:500}
 #workoutList li.dragging{opacity:0.4;}
 
 /* Exercise labels in list */
-.exercise-label{font-weight:600;font-family:'Poppins', sans-serif}
+.exercise-label{font-weight:600;font-family:'Source Sans 3', sans-serif}
 
 /* current (active) item while timer is running */
 #workoutList li.current{background:var(--j-current);color:#fff;box-shadow:0 12px 30px var(--j-shadow)}
