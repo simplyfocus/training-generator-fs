@@ -36,22 +36,40 @@ const ExLibrary = [
         {name: "Backward swizzle jump + tap or 1/2turn", type:"exercise", targets:["Power"]},
         {name: "Box Jump", type:"exercise", targets:["Legs", "Quads","Power"]},
         {name: "Broad Jump", type:"exercise", targets:["Legs", "Power"]},
+        {name: "Clapping push-ups", type:"exercise", targets:["Chest", "Arms", "Power"]},
         {name: "Correr zancadas + waltz swing + h", type:"exercise", targets:["Hip flexors","Power"]},
+        {name: "Explosive push-ups", type:"exercise", targets:["Chest", "Arms", "Power"]},
+        {name: "Explosive plank hip-dips", type:"exercise", targets:["Core", "Power"]},
         {name: "Fwd skater jumps", type:"exercise", targets:["Calves","Power"]},
+        {name: "Heisman hops", type:"exercise", targets:["Legs", "Power"]},
+        {name: "Double heisman jumps", type:"exercise", targets:["Legs", "Power"]},
+        {name: "Lateral 1/4 squat prop-up +sink", type:"exercise", targets:["Legs", "Power"]},
+        {name: "Lateral 1/4 squat prop-up +sink +shift +jump", type:"exercise", targets:["Legs", "Power"]},
         {name: "Lateral Bounds", type:"exercise", targets:["Legs", "Power"]},
+        {name: "Lateral jumps (arms up)[alt.]", type:"exercise", targets:["Legs", "arms up (variations)", "Power"]},
+        {name: "Plank jacks", type:"exercise", targets:["Core", "Cardio", "Power"]},
+        {name: "Pop squats", type:"exercise", targets:["Legs", "Power"]},
         {name: "Skater Hops", type:"exercise", targets:["Legs", "Power"]},
+        {name: "[singly] Step-ups", type:"exercise", targets:["Legs", "Quads", "Glutes", "Power"]},
+        {name: "Step-up + jump", type:"exercise", targets:["Legs", "Quads", "Glutes", "Power"]},
+        {name: "SL box jumps", type:"exercise", targets:["Legs", "Calves","Power"]},
+        {name: "SL step-up + jump", type:"exercise", targets:["Legs", "Quads", "Calves", "Power"]},
+        {name: "SL tuck jumps", type:"exercise", targets:["Core", "Hip flexors", "Power"]},
+        {name: "Squat jumps (arms extend down)", type:"exercise", targets:["Legs", "Quads", "Power"]},
+        {name: "Squat jumps (rippon)", type:"exercise", targets:["Legs", "arms up (variations)", "Quads", "Power"]},
         {name: "Tap Jumps", type:"exercise", targets:["Legs", "Calves"]},
         {name: "Tuck Jumps", type:"exercise", targets:["Legs", "Core","Power"]},
         {name: "3➡️jumps + stick (2legs) + 🔁", type:"exercise", targets:["Power"]},
         {name: "➡️jump + ⬆️jump + stick (1leg)", type:"exercise", targets:["Power"]},
-        {name: "3➡️jumps + 3⬅️jump + landing (1leg)", type:"exercise", targets:["Power"]},
-        {name: "3➡️jumps + 3⬅️jump + stick (2legs)", type:"exercise", targets:["Power"]},
+        {name: "3➡️jumps + 3⬅️jumps + landing (1leg)", type:"exercise", targets:["Power"]},
+        {name: "3➡️jumps + 3⬅️jumps + stick (2legs)", type:"exercise", targets:["Power"]},
 
         // Cardio ========
         {name: "Burpees", type:"exercise", targets:["Cardio"]},
         {name: "High Knees", type:"exercise", targets:["Cardio","Core"]},
         {name: "Jumping Jacks", type:"exercise", targets:["Cardio"]},
         {name: "Mountain Climbers", type:"exercise", targets:["Cardio","Core","Power"]},
+        {name: "Running in place (high knees)", type:"exercise", targets:["Hip flexors", "Cardio", "Power"]},
 
         // Stretches ========
         {name: "90/90 stretch", type:"stretch", targets:["Hips"]},
@@ -105,10 +123,8 @@ const ExLibrary = [
 
         {name: "Single-leg Deadlift", type: "exercise", targets: ["Balance", "Strength", "Legs"] },
 
-        {name: "Single-leg Axel takeoff hops", type: "exercise",
-            targets: ["Power", "Jumps", "Ankles", "Quads", "Glutes"]},
-        {name: "Back outside edge jump simulation", type: "exercise",
-            targets: ["Power", "Balance", "Glutes", "Hamstrings"]},
+        {name: "Single-leg Axel takeoff hops", type: "drill", targets: ["Axel", "Power", "Jumps", "Ankles", "Quads", "Glutes"]},
+        {name: "Back outside edge jump simulation", type: "drill", targets: ["Loop", "Power", "Balance", "Glutes", "Hamstrings"]},
         {name: "Split jump to controlled landing", type: "exercise",
             targets: ["Power", "Balance", "Core", "Hip flexors"]},
         {name: "Rotational jump with checked landing", type: "exercise",
@@ -125,27 +141,24 @@ const ExLibrary = [
             targets: ["Ankles", "Feet"]},
 
         
-        {name: "Toe pick vault jumps (single-leg)", type: "exercise",
-            targets: ["Drills", "Toe-loop", "Flip", "Lutz", "Calves", "Ankles", "Feet"]},
-        {name: "Outside edge to pick vault (lutz + toeloop)", type: "exercise",
-            targets:["Drills", "Lutz", "Toe-loop", "Quads"]},
-        {name: "Lutz IN-to-OUT edge change", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
+        {name: "Toe pick vault jumps (single-leg)", type: "drill", targets: [ "Toe-loop", "Flip", "Lutz", "Calves", "Ankles", "Feet"]},
+        {name: "Outside edge to pick vault (lutz + toeloop)", type: "drill", targets: [ "Lutz", "Toe-loop", "Quads"]},
+        {name: "Lutz IN-to-OUT edge change", type: "drill", targets: [ "Lutz", "Quads"]},
 
-        {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
-        {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
-        {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
-        {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
-        {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
-        {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
-        {name: "drill1", type: "exercise",
-            targets:["Drills", "Lutz", "Quads"]},
+        /*{name: "drill1", type: "drill",
+            targets: [ "Lutz", "Quads"]},
+        {name: "drill1", type: "drill",
+            targets: [ "Lutz", "Quads"]},
+        {name: "drill1", type: "drill",
+            targets: [ "Lutz", "Quads"]},
+        {name: "drill1", type: "drill",
+            targets: [ "Lutz", "Quads"]},
+        {name: "drill1", type: "drill",
+            targets: [ "Lutz", "Quads"]},
+        {name: "drill1", type: "drill",
+            targets: [ "Lutz", "Quads"]},
+        {name: "drill1", type: "drill",
+            targets: [ "Lutz", "Quads"]},*/
 ];
 
 
@@ -293,7 +306,7 @@ function getRandomTargets(elementId){
         Array.from(document.getElementById(elementId).options)
         .map(op => op.value)
         .filter(v => !mainOptions.includes(v)),
-    2)} else {return null}
+    3)} else {return null}
 };
 
 // Store target selection by type (Dictionary)
@@ -372,12 +385,17 @@ class Day {
 
         Object.keys(_wkSelection).forEach(category => {
             if(_wkSelection[category]){
-                if (_wkSelection[category].includes("random")){
-                    this[category] = getRandomTargets(category)
+                if (_wkSelection[category].includes("random")) {
+                    if(category==="cardio") this[category] = true;
+                    else this[category] = getRandomTargets(category);
 
-                } else { this[category] = _wkSelection[category]}
+                } else this[category] = _wkSelection[category];
             }
         })
+
+        // For cardio, don't generate targets when selecting "random"
+
+
     }
 
     getJumps() {
@@ -391,16 +409,16 @@ class Day {
         if (Array.isArray(this.jumps)) {
             for (let target of this.jumps) {
                     result.push(...ExLibrary
-                        .filter(ex => ex.type === "exercise" && ex.targets.includes("Drills") && ex.targets.includes(target)));
+                        .filter(ex => ex.type === "drill" && ex.targets.includes(target)));
             }    
-        } else if (typeof this.strength === "string") {
-            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes(this.jumps))//-------.map(ex => ex.name);
+        } else if (typeof this.jumps === "string") {
+            result = ExLibrary.filter(ex => ex.type === "drill" && ex.targets.includes(this.jumps))//-------.map(ex => ex.name);
 
-        } else if (typeof this.strength === "boolean") {
-            result = ExLibrary.filter(ex => ex.type === "exercise" && ex.targets.includes("Drills"))//-------.map(ex => ex.name);
+        } else if (typeof this.jumps === "boolean") {
+            result = ExLibrary.filter(ex => ex.type === "drill")//-------.map(ex => ex.name);
         } 
         result= dedupeObjects(result, "name", "type") // dedupe
-        if (result.length > 4) { result = randomSample(result, 4);}
+        if (result.length > Math.ceil(n_ofExercises /2)) { result = randomSample(result, Math.ceil(n_ofExercises /2));} // limit drills
 
         return result.length ? result : null;
     }
