@@ -26,8 +26,10 @@
 <body>
 
 <main>
+    
     <!-- CATEGORY SELECTION -->
     <section id="target-selection">
+        <button id="backToMenuBtn" class="navigationBtn" onclick="window.location.href='../menu.html'">back to menu</button>
         <header><h1>Workout Generator</h1></header>
         <form id="categorySelect">
             <fieldset>
@@ -158,12 +160,12 @@ const selects = document.querySelectorAll("select");
 const raw_target_list = document.getElementById("selectedList");
 const generateBtn = document.getElementById("generateWorkout");
 const planBtn = document.getElementById("usePlanBtn")
-const mainOptions = ["Power", "Strength", "Cardio", "Stretch", "random", "Salchow", "Toe-loop", "Loop","Flip","Lutz","Axel"]
+const mainOptions = ["Jumps","Power", "Strength", "Cardio", "Stretch", "random", "Salchow", "Toe-loop", "Loop","Flip","Lutz","Axel"]
 workoutSelection=[];
 displayItems=[];
 const generatorPage = document.getElementById("target-selection");
 const workoutPage = document.getElementById("workout-page");
-const n_ofExercises = 9;
+const n_ofExercises = 8;
 const list = document.getElementById("workoutList");
 // always prepend a short warm-up sequence regardless of day/week
 const warmups = [
@@ -216,9 +218,10 @@ function makeTrainingList(plan){
 
         generatorPage.classList.toggle("hidden");
         workoutPage.classList.toggle("hidden");
-        generateBtn.classList.toggle("middled")
+        generateBtn.classList.toggle("middled");
+        document.getElementById("backToMenuBtn").classList.toggle("hidden");
     
-        if(genHidden){genHidden=false;moveElement("generateWorkout","target-selection");moveElement("usePlanBtn","target-selection")
+        if(genHidden){genHidden=false;moveElement("generateWorkout","target-selection");moveElement("usePlanBtn","target-selection");
             timer.pause();document.getElementById("timer").style="display: none"
         } else {genHidden=true;
             if (plan){ workoutSelection=loadPlan(todayWD); clearSelections()} else {workoutSelection = getWorkoutSelection();}
@@ -597,7 +600,6 @@ function renderList(){
         const li = document.createElement("li");
         //li.setAttribute('data-order', index);
         li.tabIndex = 0;
-        li.title = 'Click to start timer';
 
         /*TESTING COLORS AND TYPES*/
         if (item.targets && item.targets.includes("Drills")){li.className = "drill"}
@@ -649,11 +651,13 @@ function renderList(){
         left.className = 'item-left';
         left.style.display = 'flex';
         left.style.alignItems = 'center';
+        left.title = 'Click to start timer';
 
         const checkBtn = document.createElement('button');
         checkBtn.className = 'check-circle';
         checkBtn.setAttribute('aria-pressed', 'false');
         checkBtn.setAttribute('aria-label', `Mark ${item} done`);
+        checkBtn.title = `Mark completed`;
 
         const label = document.createElement('span');
         label.className = 'exercise-label';
