@@ -247,7 +247,7 @@ button.funkyBtn.middled{margin:0; padding:5px 10px;font-size:11px;}
 /* Main container */
 .container{
 
-    /*TESTING*/ position: relative; overflow-x: hidden;
+    /*TESTING*/ position: relative; /*overflow-x: hidden;*/
     width:min(900px,98%);
     background:var(--card);
     border-radius:14px;
